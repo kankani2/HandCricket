@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:handcricket/gameHomePage.dart';
-import 'package:handcricket/iconMapping.dart';
+import 'package:handcricket/game_home_page.dart';
+import 'package:handcricket/icon_mapping.dart';
 import 'package:handcricket/user.dart';
 
 class SelectIconPage extends StatefulWidget {

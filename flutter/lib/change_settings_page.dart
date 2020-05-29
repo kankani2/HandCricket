@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:handcricket/iconMapping.dart';
+import 'package:handcricket/icon_mapping.dart';
 import 'package:handcricket/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -134,21 +134,6 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
                   ),
                 ],
               ),
-//              Row(
-//                mainAxisAlignment: MainAxisAlignment.center,
-//                children: <Widget>[
-//                  IconButton(
-//                    icon: Icon(Icons.arrow_left),
-//                    iconSize: 80,
-//                    onPressed: goToPrevious,
-//                  ),
-//                  IconButton(
-//                    icon: Icon(Icons.arrow_right),
-//                    iconSize: 80,
-//                    onPressed: goToNext,
-//                  ),
-//                ],
-//              ),
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 child: FlatButton(

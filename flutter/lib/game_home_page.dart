@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:handcricket/changeSettingsPage.dart';
+import 'package:handcricket/change_settings_page.dart';
 import 'package:handcricket/user.dart';
 import 'package:flutter/widgets.dart';
 
@@ -74,8 +74,6 @@ class _GameHomePageState extends State<GameHomePage> {
                           currUser: currUser,
                         )),
               );
-              print("user name: ${currUser.name}");
-              print("user image id: ${currUser.imageId}");
             });
           });
         },

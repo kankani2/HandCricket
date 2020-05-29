@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:handcricket/gameHomePage.dart';
-import 'package:handcricket/selectIcon.dart';
+import 'package:handcricket/game_home_page.dart';
+import 'package:handcricket/select_icon.dart';
 import 'package:handcricket/user.dart';
 
 void main() {

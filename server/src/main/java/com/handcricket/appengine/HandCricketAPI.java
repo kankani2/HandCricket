@@ -52,11 +52,11 @@ public class HandCricketAPI {
     }
 
     @ApiMethod(
-            name = "editUser",
+            name = "updateUser",
             httpMethod = ApiMethod.HttpMethod.PUT,
             path = "user/{uid}"
     )
-    public void editUser(User user, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
+    public void updateUser(User user, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
         DB.userMustExist_sync(uid);
         HandCricketServlet.firebase.child(DB.USERS).child(uid).setValue(user);
     }

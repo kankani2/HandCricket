@@ -1,0 +1,8 @@
+runtime: java8
+instance_class: F1
+
+# Explicitly set the memory limit and maximum heap size for the Spring Boot app
+env_variables:
+  JAVA_TOOL_OPTIONS: "-XX:MaxRAM=256m -XX:ActiveProcessorCount=2 -Xmx32m"
+  ENDPOINTS_SERVICE_NAME: "resounding-sled-278521.appspot.com"
+  ENDPOINTS_SERVICE_VERSION: "2020-06-01r1"

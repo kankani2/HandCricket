@@ -6,12 +6,9 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
-import com.google.firebase.database.*;
+import com.google.firebase.database.DatabaseReference;
 import com.handcricket.appengine.datamodel.UID;
 import com.handcricket.appengine.datamodel.User;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Api(
         name = "handcricket",

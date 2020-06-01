@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>war</packaging>
+
+	<groupId>com.handcricket.appengine</groupId>
+	<artifactId>handcricket-j8</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Hand Cricket Game Server</name>
+	<description>App Engine for Multiplayer Hand Cricket</description>
+
+	<properties>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+		<endpoints.framework.version>2.2.1</endpoints.framework.version>
+		<endpoints.management.version>1.0.12</endpoints.management.version>
+
+		<junit-jupiter.version>5.5.0</junit-jupiter.version>
+
+		<java.version>8</java.version>
+
+		<endpoints.project.id>resounding-sled-278521</endpoints.project.id>
+	</properties>
+
+	<dependencies>
+		<!-- Compile/runtime dependencies -->
+		<dependency>
+			<groupId>com.google.endpoints</groupId>
+			<artifactId>endpoints-framework</artifactId>
+			<version>${endpoints.framework.version}</version>
+		</dependency>
+
+		<!-- API Management -->
+		<dependency>
+			<groupId>com.google.endpoints</groupId>
+			<artifactId>endpoints-management-control-appengine-all</artifactId>
+			<version>1.0.12</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.appengine</groupId>
+			<artifactId>appengine-api-1.0-sdk</artifactId>
+			<version>1.9.80</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<!-- Testing Dependencies -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit-jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Firebase Dependencies -->
+		<dependency>
+			<groupId>com.google.firebase</groupId>
+			<artifactId>firebase-server-sdk</artifactId>
+			<version>[3.0.0,)</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<!-- for hot reload of the web application-->
+		<outputDirectory>
+			${project.build.directory}/${project.build.finalName}/WEB-INF/classes
+		</outputDirectory>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<webResources>
+						<resources>
+							<directory>${basedir}/src/main/webapp</directory>
+							<filtering>true</filtering>
+						</resources>
+					</webResources>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>appengine-maven-plugin</artifactId>
+				<version>2.2.0</version>
+				<configuration>
+					<projectId>GCLOUD_CONFIG</projectId>
+					<version>GCLOUD_CONFIG</version>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>endpoints-framework-maven-plugin</artifactId>
+				<version>2.0.1</version>
+				<configuration>
+					<!-- plugin configuration -->
+					<hostname>${endpoints.project.id}.appspot.com</hostname>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>

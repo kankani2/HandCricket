@@ -16,19 +16,19 @@ public class DB {
 
     static User getUser_sync(String uid) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.USERS).child(uid));
-        userMustExist(uid, snapshot);
+        mustExist(snapshot);
 
         return snapshot.getValue(new GenericTypeIndicator<User>() {});
     }
 
     static void userMustExist_sync(String uid) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.USERS).child(uid));
-        userMustExist(uid, snapshot);
+        mustExist(snapshot);
     }
 
-    private static void userMustExist(String uid, DataSnapshot snapshot) throws NotFoundException {
+    private static void mustExist(DataSnapshot snapshot) throws NotFoundException {
         if (!snapshot.exists()) {
-            throw new NotFoundException("User " + uid + " not found.");
+            throw new NotFoundException(String.format("Resource with ID %s not found.", snapshot.getKey()));
         }
     }
 
@@ -43,9 +43,7 @@ public class DB {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
+            public void onCancelled(DatabaseError databaseError) {}
         });
 
         try {

@@ -7,18 +7,40 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
+import com.handcricket.appengine.datamodel.Game;
 import com.handcricket.appengine.datamodel.User;
 
 import java.util.concurrent.CountDownLatch;
 
 public class DB {
     public static final String USERS = "users";
+    public static final String GAMES = "games";
+    public static final String CODES = "codes";
+
+    static Game getGame_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<Game>() {});
+    }
+
+    static void gameMustExist_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID));
+        mustExist(snapshot);
+    }
 
     static User getUser_sync(String uid) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.USERS).child(uid));
         mustExist(snapshot);
 
         return snapshot.getValue(new GenericTypeIndicator<User>() {});
+    }
+
+    static String getGameIdFrom(String gameCode) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.CODES).child(gameCode));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<String>() {});
     }
 
     static void userMustExist_sync(String uid) throws InternalServerErrorException, NotFoundException {

@@ -6,9 +6,12 @@ import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.handcricket.appengine.datamodel.UID;
-import com.handcricket.appengine.datamodel.User;
+import com.handcricket.appengine.datamodel.*;
+
+import java.io.FileNotFoundException;
+import java.util.Random;
 
 @Api(
         name = "handcricket",
@@ -56,5 +59,78 @@ public class HandCricketAPI {
     public void updateUser(User user, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
         DB.userMustExist_sync(uid);
         HandCricketServlet.firebase.child(DB.USERS).child(uid).setValue(user);
+    }
+
+    @ApiMethod(
+            name = "createGame",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game"
+    )
+    public GameInfo createGame(UID uid) throws NotFoundException, InternalServerErrorException, FileNotFoundException {
+        // Creating a node under games
+        DB.userMustExist_sync(uid.getUid());
+        DatabaseReference gamesRef = HandCricketServlet.firebase.child(DB.GAMES);
+        String gameID = gamesRef.push().getKey();
+
+        // Creating a node under codes after generating an available 8 letter game code
+        DatabaseReference codesRef = HandCricketServlet.firebase.child(DB.CODES);
+        DataSnapshot snapshot = DB.getDataSnapshot_sync(codesRef);
+
+        int numCodeWords = FourLetterCodes.CODES.length;
+        if (snapshot.getChildrenCount() >= numCodeWords * numCodeWords) {
+            throw new InternalServerErrorException("Could not assign a game code because all game codes are exhausted.");
+        }
+
+        String gameCode = "";
+        while (true) {
+            Random rand = new Random();
+            int firstIndex = rand.nextInt(numCodeWords);
+            int secondIndex = rand.nextInt(numCodeWords);
+            gameCode = FourLetterCodes.CODES[firstIndex] + " " + FourLetterCodes.CODES[secondIndex];
+            if (!snapshot.hasChild(gameCode)) {
+                // TODO: handle race conditions
+                codesRef.child(gameCode).setValue(gameID);
+
+                Game game = new Game(uid.getUid(), gameCode);
+                gamesRef.child(gameID).setValue(game);
+                break;
+            }
+        }
+
+        return new GameInfo(gameCode, gameID);
+    }
+
+    @ApiMethod(
+            name = "deleteGame",
+            httpMethod = ApiMethod.HttpMethod.DELETE,
+            path = "game/{gameID}"
+    )
+    public void deleteGame(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException, FileNotFoundException {
+        Game game = DB.getGame_sync(gameID);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).removeValue();
+        HandCricketServlet.firebase.child(DB.CODES).child(game.getCode()).removeValue();
+    }
+
+    @ApiMethod(
+            name = "addPlayer",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game/player/{uid}"
+    )
+    public GameInfo addPlayer(GameCode gameCode, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
+        DB.userMustExist_sync(uid);
+        String gameID = DB.getGameIdFrom(gameCode.getGameCode());
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).setValue(0);
+        return new GameInfo(gameCode.getGameCode(), gameID);
+    }
+
+    @ApiMethod(
+            name = "removePlayer",
+            httpMethod = ApiMethod.HttpMethod.DELETE,
+            path = "game/{gameID}/player/{uid}"
+    )
+    public void removePlayer(@Named("gameID") String gameID, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
+        DB.userMustExist_sync(uid);
+        DB.gameMustExist_sync(gameID);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 }

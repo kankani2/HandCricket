@@ -141,26 +141,37 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
-    private void addPlayersForTeam(String teamName, ArrayList<String> team, String gameID){
+    private void addPlayersToTeam(String teamName, ArrayList<String> team, String gameID){
         team.forEach(val -> {
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue(teamName);
         });
     }
+
     @ApiMethod(
             name = "startGame",
             httpMethod = ApiMethod.HttpMethod.POST,
             path = "game/{gameID}/start"
     )
     public void startGame(Team team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
-        // Free the game code
-        String gameCode = DB.getGameCode_sync(gameID);
-        HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
-
         //Store assigned team value for each player
         ArrayList<String> blueTeam = team.getBlueTeam();
         ArrayList<String> redTeam = team.getRedTeam();
-        addPlayersForTeam("red", redTeam, gameID);
-        addPlayersForTeam("blue", blueTeam, gameID);
+        addPlayersToTeam("red", redTeam, gameID);
+        addPlayersToTeam("blue", blueTeam, gameID);
+        // Update game message to null hence deleting the node
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue(null);
+    }
 
+    @ApiMethod(
+            name = "teamMatch",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game/{gameID}/match"
+    )
+    public void teamMatch(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        // Free the game code
+        String gameCode = DB.getGameCode_sync(gameID);
+        HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
+        // Update game message
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue("The host is selecting teams...");
     }
 }

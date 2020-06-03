@@ -8,10 +8,17 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.handcricket.appengine.datamodel.*;
+import com.handcricket.appengine.datamodel.UID;
+import com.handcricket.appengine.datamodel.User;
+import com.handcricket.appengine.datamodel.GameInfo;
+import com.handcricket.appengine.datamodel.Game;
+import com.handcricket.appengine.datamodel.GameCode;
+import com.handcricket.appengine.datamodel.Team;
+
 
 import java.io.FileNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Random;
 
 @Api(
         name = "handcricket",
@@ -134,6 +141,11 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
+    private void addPlayersForTeam(String teamName, ArrayList<String> team, String gameID){
+        team.forEach(val -> {
+            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue(teamName);
+        });
+    }
     @ApiMethod(
             name = "startGame",
             httpMethod = ApiMethod.HttpMethod.POST,
@@ -147,11 +159,8 @@ public class HandCricketAPI {
         //Store assigned team value for each player
         ArrayList<String> blueTeam = team.getBlueTeam();
         ArrayList<String> redTeam = team.getRedTeam();
-        blueTeam.forEach(val -> {
-            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue("blue");
-        });
-        redTeam.forEach(val -> {
-            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue("red");
-        });
+        addPlayersForTeam("red", redTeam, gameID);
+        addPlayersForTeam("blue", blueTeam, gameID);
+
     }
 }

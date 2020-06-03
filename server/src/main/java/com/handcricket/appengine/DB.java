@@ -17,13 +17,6 @@ public class DB {
     public static final String GAMES = "games";
     public static final String CODES = "codes";
 
-    static Game getGame_sync(String gameID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<Game>() {});
-    }
-
     static String getGameCode_sync(String gameID) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("code"));
         mustExist(snapshot);

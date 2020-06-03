@@ -67,12 +67,11 @@ class _GameHomePageState extends State<GameHomePage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           User.getUserInfoFromDisk().then((user) {
-            User currUser = User(user.name, user.imageId);
             Navigator.push(
               context,
               MaterialPageRoute(
                   builder: (context) => ChangeSettingsPage(
-                        currUser: currUser,
+                        currUser: user,
                       )),
             );
           });

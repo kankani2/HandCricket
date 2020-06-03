@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:handcricket/icon_mapping.dart';
+import 'package:handcricket/constants.dart';
 import 'package:handcricket/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
@@ -49,7 +49,7 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[300],
+      backgroundColor: primaryColor,
       body: SafeArea(
         child: Container(
           padding: EdgeInsets.fromLTRB(20, 20, 20, 20),

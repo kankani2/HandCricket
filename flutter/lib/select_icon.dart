@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/game_home_page.dart';
-import 'package:handcricket/icon_mapping.dart';
+import 'package:handcricket/constants.dart';
 import 'package:handcricket/user.dart';
 
 class SelectIconPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[300],
+      backgroundColor: primaryColor,
       body: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -32,7 +32,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 60,
-                  fontFamily: 'BalsamiqSans',
+                  fontFamily: primaryfont,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -54,11 +54,11 @@ class _SelectIconPageState extends State<SelectIconPage> {
     );
   }
 
-  void iconPressed(int imageKey) async {
+  void iconPressed(int iconKey) async {
     //set name and icon selected
-    User currUser = User(name, imageKey);
+    User currUser = User(name, iconKey);
     currUser.storeUserInfoToDisk();
-    Navigator.push(
+    Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => GameHomePage()),
     );

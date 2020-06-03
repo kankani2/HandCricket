@@ -3,6 +3,8 @@ import 'package:handcricket/change_settings_page.dart';
 import 'package:handcricket/user.dart';
 import 'package:flutter/widgets.dart';
 
+import 'constants.dart';
+
 class GameHomePage extends StatefulWidget {
   @override
   _GameHomePageState createState() => _GameHomePageState();
@@ -12,7 +14,7 @@ class _GameHomePageState extends State<GameHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[300],
+      backgroundColor: primaryColor,
       body: Container(
         padding: EdgeInsets.all(20),
         child: Column(
@@ -29,7 +31,7 @@ class _GameHomePageState extends State<GameHomePage> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 40,
-                        fontFamily: 'BalsamiqSans',
+                        fontFamily: primaryfont,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -51,7 +53,7 @@ class _GameHomePageState extends State<GameHomePage> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 40,
-                        fontFamily: 'BalsamiqSans',
+                        fontFamily: primaryfont,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -64,17 +66,15 @@ class _GameHomePageState extends State<GameHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          User.getCurrUserIconFromDisk().then((icon) {
-            User.getCurrUserNameFromDisk().then((name) {
-              User currUser = User(name, icon);
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ChangeSettingsPage(
-                          currUser: currUser,
-                        )),
-              );
-            });
+          User.getUserInfoFromDisk().then((user) {
+            User currUser = User(user.name, user.imageId);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChangeSettingsPage(
+                        currUser: currUser,
+                      )),
+            );
           });
         },
         child: Icon(Icons.settings),

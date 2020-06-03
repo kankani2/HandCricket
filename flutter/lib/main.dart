@@ -1,41 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:handcricket/constants.dart';
 import 'package:handcricket/game_home_page.dart';
 import 'package:handcricket/select_icon.dart';
 import 'package:handcricket/user.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  User.getCurrUserNameFromDisk().then((name) {
-    User.getCurrUserIconFromDisk().then((icon) {
-      if (name != null && icon != null) {
-        runApp(MyAppHomepage());
-      } else {
-        runApp(MyAppFirstTime());
-      }
-    });
+  // TODO: Use UID instead of checking name and imageID separately after adding server calls
+  User.getUserInfoFromDisk().then((user) {
+    if (user.name != null && user.imageId != null) {
+      runApp(Homepage());
+    } else {
+      runApp(FirstTime());
+    }
   });
 }
 
-class MyAppFirstTime extends StatelessWidget {
+class FirstTime extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hand Cricket',
-      color: Colors.blue,
+      title: appName,
+      color: primaryColor,
       home: FirstNameSettingsPage(),
     );
   }
 }
 
-class MyAppHomepage extends StatelessWidget {
+class Homepage extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Hand Cricket',
-      color: Colors.blue,
+      title: appName,
+      color: primaryColor,
       home: GameHomePage(),
     );
   }
@@ -51,8 +51,7 @@ class _FirstNameSettingsPageState extends State<FirstNameSettingsPage> {
   final _textEditingController = TextEditingController();
 
   void _onNameSubmit(String username) {
-    if (_textEditingController.text.isEmpty ||
-        _textEditingController.text.trim().isEmpty) {
+    if (_textEditingController.text.trim().isEmpty) {
       setState(() {
         _validate = true;
       });
@@ -60,7 +59,7 @@ class _FirstNameSettingsPageState extends State<FirstNameSettingsPage> {
       setState(() {
         _validate = false;
       });
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
             builder: (context) => SelectIconPage(
@@ -73,7 +72,7 @@ class _FirstNameSettingsPageState extends State<FirstNameSettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue[300],
+      backgroundColor: primaryColor,
       body: Container(
         padding: EdgeInsets.all(20),
         child: Column(
@@ -86,7 +85,7 @@ class _FirstNameSettingsPageState extends State<FirstNameSettingsPage> {
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 60,
-                    fontFamily: 'BalsamiqSans',
+                    fontFamily: primaryfont,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

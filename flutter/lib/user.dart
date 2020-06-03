@@ -15,6 +15,11 @@ class User {
     prefs.setInt("imageId", imageId);
   }
 
+  static Future<User> getUserInfoFromDisk() async {
+    final prefs = await SharedPreferences.getInstance();
+    return new User(prefs.getString("name"), prefs.getInt("imageId"));
+  }
+
   static Future<String> getCurrUserNameFromDisk() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString("name");

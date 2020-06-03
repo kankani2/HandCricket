@@ -88,7 +88,7 @@ public class HandCricketAPI {
             throw new InternalServerErrorException("Could not assign a game code because all game codes are exhausted.");
         }
 
-        String gameCode = "";
+        String gameCode;
         while (true) {
             Random rand = new Random();
             int firstIndex = rand.nextInt(numCodeWords);
@@ -103,7 +103,6 @@ public class HandCricketAPI {
                 break;
             }
         }
-
         return new GameInfo(gameCode, gameID);
     }
 
@@ -141,11 +140,12 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
-    private void addPlayersForTeam(String teamName, ArrayList<String> team, String gameID){
+    private void addPlayersForTeam(String teamName, ArrayList<String> team, String gameID) {
         team.forEach(val -> {
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue(teamName);
         });
     }
+
     @ApiMethod(
             name = "startGame",
             httpMethod = ApiMethod.HttpMethod.POST,
@@ -161,6 +161,5 @@ public class HandCricketAPI {
         ArrayList<String> redTeam = team.getRedTeam();
         addPlayersForTeam("red", redTeam, gameID);
         addPlayersForTeam("blue", blueTeam, gameID);
-
     }
 }

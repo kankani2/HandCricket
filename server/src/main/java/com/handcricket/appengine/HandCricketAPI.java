@@ -11,7 +11,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.handcricket.appengine.datamodel.*;
 
 import java.io.FileNotFoundException;
-import java.util.Random;
+import java.util.*;
 
 @Api(
         name = "handcricket",
@@ -106,9 +106,9 @@ public class HandCricketAPI {
             path = "game/{gameID}"
     )
     public void deleteGame(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException, FileNotFoundException {
-        Game game = DB.getGame_sync(gameID);
+        String gameCode = DB.getGameCode_sync(gameID);
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).removeValue();
-        HandCricketServlet.firebase.child(DB.CODES).child(game.getCode()).removeValue();
+        HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
     }
 
     @ApiMethod(
@@ -132,5 +132,26 @@ public class HandCricketAPI {
         DB.userMustExist_sync(uid);
         DB.gameMustExist_sync(gameID);
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
+    }
+
+    @ApiMethod(
+            name = "startGame",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game/{gameID}/start"
+    )
+    public void startGame(Team team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        // Free the game code
+        String gameCode = DB.getGameCode_sync(gameID);
+        HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
+
+        //Store assigned team value for each player
+        ArrayList<String> blueTeam = team.getBlueTeam();
+        ArrayList<String> redTeam = team.getRedTeam();
+        blueTeam.forEach(val -> {
+            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue("blue");
+        });
+        redTeam.forEach(val -> {
+            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue("red");
+        });
     }
 }

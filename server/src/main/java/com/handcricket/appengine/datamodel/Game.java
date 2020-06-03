@@ -3,10 +3,10 @@ package com.handcricket.appengine.datamodel;
 import java.util.HashMap;
 
 public class Game {
-
-    private HashMap<String, Integer> players; // Changing this variable name might break functionality.
-    private String host;
+    // Changing these variable names might break functionality.
+    private HashMap<String, Integer> players;
     private String code;
+    private String host;
 
     public Game() {}
 

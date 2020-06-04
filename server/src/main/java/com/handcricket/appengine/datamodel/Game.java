@@ -7,6 +7,7 @@ public class Game {
     private HashMap<String, Integer> players;
     private String code;
     private String host;
+    private String message;
 
     public Game() {}
 
@@ -15,6 +16,7 @@ public class Game {
         this.players = new HashMap<>();
         this.players.put(uid, 0);
         this.code = gameCode;
+        this.message = "Waiting for players to join...";
     }
 
     public HashMap<String, Integer> getPlayers() {
@@ -39,5 +41,13 @@ public class Game {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

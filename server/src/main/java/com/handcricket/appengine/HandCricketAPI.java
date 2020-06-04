@@ -88,7 +88,7 @@ public class HandCricketAPI {
             throw new InternalServerErrorException("Could not assign a game code because all game codes are exhausted.");
         }
 
-        String gameCode = "";
+        String gameCode;
         while (true) {
             Random rand = new Random();
             int firstIndex = rand.nextInt(numCodeWords);
@@ -141,7 +141,7 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
-    private void addPlayersToTeam(String teamName, ArrayList<String> team, String gameID){
+    private void addPlayersToTeam(String teamName, ArrayList<String> team, String gameID) {
         team.forEach(val -> {
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue(teamName);
         });

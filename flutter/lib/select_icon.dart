@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/game_home_page.dart';
 import 'package:handcricket/constants.dart';
+import 'package:handcricket/select_first_name.dart';
 import 'package:handcricket/user.dart';
+import 'package:handcricket/utils/backend.dart';
 
 class SelectIconPage extends StatefulWidget {
   final String name;
@@ -15,11 +17,14 @@ class SelectIconPage extends StatefulWidget {
 
 class _SelectIconPageState extends State<SelectIconPage> {
   String name;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   _SelectIconPageState(this.name);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: primaryColor,
       body: SafeArea(
         child: Column(
@@ -55,8 +60,17 @@ class _SelectIconPageState extends State<SelectIconPage> {
   }
 
   void iconPressed(int iconKey) async {
-    //set name and icon selected
-    User currUser = User(name, iconKey);
+    var response = await request(
+        HttpMethod.POST, "/user", {"name": name, "icon": iconKey});
+    if (!isSuccess(response)) {
+      final snackBar =
+          SnackBar(content: Text('User could not be created in the database.'));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
+      return;
+    }
+
+    Map respBody = await readResponse(response);
+    User currUser = User(respBody["uid"], name, iconKey);
     currUser.storeUserInfoToDisk();
     Navigator.pushReplacement(
       context,

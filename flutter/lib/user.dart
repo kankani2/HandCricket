@@ -1,22 +1,25 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
+  String uid;
   String name;
-  int imageId;
+  int icon;
 
-  User(String name, int imageId) {
+  User(String uid, String name, int icon) {
+    this.uid = uid;
     this.name = name;
-    this.imageId = imageId;
+    this.icon = icon;
   }
 
   void storeUserInfoToDisk() async {
     final prefs = await SharedPreferences.getInstance();
+    prefs.setString("uid", uid);
     prefs.setString("name", name);
-    prefs.setInt("imageId", imageId);
+    prefs.setInt("icon", icon);
   }
 
   static Future<User> getUserInfoFromDisk() async {
     final prefs = await SharedPreferences.getInstance();
-    return new User(prefs.getString("name"), prefs.getInt("imageId"));
+    return new User(prefs.getString("uid"), prefs.getString("name"), prefs.getInt("icon"));
   }
 }

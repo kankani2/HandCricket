@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
-import 'package:handcricket/user.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:handcricket/utils/backend.dart';
 
-class ChangeSettingsPage extends StatefulWidget {
+class SettingsPage extends StatefulWidget {
   final User currUser;
 
-  ChangeSettingsPage({Key key, @required this.currUser}) : super(key: key);
+  SettingsPage({Key key, @required this.currUser}) : super(key: key);
 
   @override
-  _ChangeSettingsPageState createState() => _ChangeSettingsPageState(currUser);
+  _SettingsPageState createState() => _SettingsPageState(currUser);
 }
 
-class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
+class _SettingsPageState extends State<SettingsPage> {
   CarouselController buttonCarouselController = CarouselController();
   User currUser;
   bool _validate = false;
-  _ChangeSettingsPageState(this.currUser);
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  _SettingsPageState(this.currUser);
+
   int currentIndexForSlider = 0;
   final TextEditingController _usernameController = new TextEditingController();
 
@@ -25,7 +29,7 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
   void initState() {
     super.initState();
     _usernameController.text = currUser.name;
-    currentIndexForSlider = currUser.imageId;
+    currentIndexForSlider = currUser.icon;
   }
 
   List<String> getIconList() {
@@ -46,9 +50,26 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
         duration: Duration(milliseconds: 300), curve: Curves.decelerate);
   }
 
+  _saveSettings() async {
+    currUser.icon = currentIndexForSlider;
+
+    var response = await request(HttpMethod.PUT, "/user/${currUser.uid}",
+        {"name": currUser.name, "icon": currUser.icon});
+    if (!isSuccess(response)) {
+      final snackBar =
+          SnackBar(content: Text('Database could not be updated.'));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
+      return;
+    }
+
+    currUser.storeUserInfoToDisk();
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: primaryColor,
       body: SafeArea(
         child: Container(
@@ -74,8 +95,7 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
                     fillColor: Colors.white,
                   ),
                   onSubmitted: (String name) {
-                    if (_usernameController.text.isEmpty ||
-                        _usernameController.text.trim().isEmpty) {
+                    if (_usernameController.text.trim().isEmpty) {
                       setState(() {
                         _validate = true;
                       });
@@ -100,7 +120,7 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
                     child: CarouselSlider(
                       carouselController: buttonCarouselController,
                       options: CarouselOptions(
-                        initialPage: currUser.imageId,
+                        initialPage: currUser.icon,
                         enlargeCenterPage: true,
                         onPageChanged: (index, reason) {
                           currentIndexForSlider = index;
@@ -142,11 +162,7 @@ class _ChangeSettingsPageState extends State<ChangeSettingsPage> {
                     'DONE',
                     style: TextStyle(fontSize: 30, color: Colors.white),
                   ),
-                  onPressed: () {
-                    currUser.imageId = currentIndexForSlider;
-                    currUser.storeUserInfoToDisk();
-                    Navigator.pop(context);
-                  },
+                  onPressed: _saveSettings,
                 ),
               ),
             ],

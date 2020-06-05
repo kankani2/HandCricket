@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:handcricket/change_settings_page.dart';
-import 'package:handcricket/user.dart';
+import 'package:handcricket/pages/settings.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:flutter/widgets.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class GameHomePage extends StatefulWidget {
   @override
@@ -70,7 +70,7 @@ class _GameHomePageState extends State<GameHomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => ChangeSettingsPage(
+                  builder: (context) => SettingsPage(
                         currUser: user,
                       )),
             );

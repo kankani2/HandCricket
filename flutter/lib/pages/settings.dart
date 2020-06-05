@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
-import 'package:handcricket/user.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:handcricket/utils/backend.dart';
 
@@ -56,7 +56,6 @@ class _SettingsPageState extends State<SettingsPage> {
     var response = await request(HttpMethod.PUT, "/user/${currUser.uid}",
         {"name": currUser.name, "icon": currUser.icon});
     if (!isSuccess(response)) {
-      print(response);
       final snackBar =
           SnackBar(content: Text('Database could not be updated.'));
       _scaffoldKey.currentState.showSnackBar(snackBar);

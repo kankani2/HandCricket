@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:handcricket/settings_page.dart';
-import 'package:handcricket/user.dart';
+import 'package:handcricket/pages/settings.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:flutter/widgets.dart';
 
-import 'constants.dart';
+import '../constants.dart';
 
 class GameHomePage extends StatefulWidget {
   @override

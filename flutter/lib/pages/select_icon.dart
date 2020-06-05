@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:handcricket/game_home_page.dart';
+import 'package:handcricket/pages/game_home.dart';
 import 'package:handcricket/constants.dart';
-import 'package:handcricket/select_first_name.dart';
-import 'package:handcricket/user.dart';
+import 'package:handcricket/pages/select_first_name.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/backend.dart';
 
 class SelectIconPage extends StatefulWidget {

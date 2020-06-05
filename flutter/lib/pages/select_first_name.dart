@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:handcricket/constants.dart';
-import 'package:handcricket/select_icon.dart';
+import 'package:handcricket/pages/select_icon.dart';
 
 class SelectFirstNamePage extends StatefulWidget {
   @override

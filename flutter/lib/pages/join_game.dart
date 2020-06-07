@@ -16,7 +16,7 @@ class _JoinGamePage extends State<JoinGamePage> {
     int end = (codeWordLength / 2).floor();
     if (secondWord) {
       start = (codeWordLength / 2).floor();
-      end = codeWordLength - 1;
+      end = codeWordLength;
     }
     List<Container> containerList = new List<Container>();
     for (int i = start; i < end; i++) {
@@ -40,34 +40,12 @@ class _JoinGamePage extends State<JoinGamePage> {
               border: OutlineInputBorder(),
             ),
             onChanged: (String letter) {
-              if (textControllers[i].text.length == 1) {
-                FocusScope.of(context).nextFocus();
+              if (!secondWord || i != (codeWordLength - 1)) {
+                if (textControllers[i].text.length == 1) {
+                  FocusScope.of(context).nextFocus();
+                }
               }
             },
-          ),
-        ),
-      );
-    }
-    if (secondWord) {
-      containerList.add(
-        Container(
-          width: 53,
-          height: 45,
-          padding: EdgeInsets.all(0),
-          margin: EdgeInsets.all(5),
-          child: TextField(
-            controller: textControllers[codeWordLength - 1],
-            textAlign: TextAlign.center,
-            cursorColor: Colors.white,
-            keyboardType: TextInputType.text,
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontSize: 25,
-            ),
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-            ),
           ),
         ),
       );
@@ -124,6 +102,7 @@ class _JoinGamePage extends State<JoinGamePage> {
                   for (int i = 0; i < codeWordLength; i++) {
                     code += textControllers[i].text;
                   }
+                  print(code);
                   // TODO: Handle entered code
                 },
                 child: Text(

@@ -6,7 +6,7 @@ class GameInfo {
 
   GameInfo(this.gameCode, this.gameID);
 
-  void storeGameInfoToDisk() async {
+  Future<void> storeGameInfoToDisk() async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString("gameID", gameID);
     prefs.setString("gameCode", gameCode);

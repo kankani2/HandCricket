@@ -27,7 +27,7 @@ class _GameHomePageState extends State<GameHomePage> {
     }
     Map respBody = await readResponse(response);
     GameInfo currGame = GameInfo(respBody["gameCode"], respBody["gameID"]);
-    currGame.storeGameInfoToDisk();
+    await currGame.storeGameInfoToDisk();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => CreateGamePage()),
@@ -35,18 +35,6 @@ class _GameHomePageState extends State<GameHomePage> {
   }
 
   void joinGame() async {
-    var user = await User.getUserInfoFromDisk();
-    var gameInfo = await GameInfo.getGameInfoFromDisk();
-    var response = await request(HttpMethod.POST, "/game/player/${user.uid}",
-        {"gameCode": gameInfo.gameCode});
-    if (!isSuccess(response)) {
-      final snackBar = SnackBar(content: Text('Game could not be created.'));
-      _scaffoldKey.currentState.showSnackBar(snackBar);
-      return;
-    }
-    Map respBody = await readResponse(response);
-    GameInfo currGame = GameInfo(respBody["gameCode"], respBody["gameID"]);
-    currGame.storeGameInfoToDisk();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => JoinGamePage()),

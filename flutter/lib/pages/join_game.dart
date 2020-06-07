@@ -8,7 +8,6 @@ class JoinGamePage extends StatefulWidget {
 }
 
 class _JoinGamePage extends State<JoinGamePage> {
-  String gameCodeEntered = "";
   List<TextEditingController> textControllers =
       List.generate(codeWordLength, (i) => TextEditingController());
 
@@ -125,6 +124,7 @@ class _JoinGamePage extends State<JoinGamePage> {
                   for (int i = 0; i < codeWordLength; i++) {
                     code += textControllers[i].text;
                   }
+                  // TODO: Handle entered code
                 },
                 child: Text(
                   'Done',

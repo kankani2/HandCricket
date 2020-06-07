@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,7 +29,7 @@ class _CreateGamePage extends State<CreateGamePage> {
     });
   }
 
-  List<Expanded> gameCode(String code) {
+  List<Expanded> getGameCodeWidgets(String code) {
     List<Expanded> codeWord = new List<Expanded>();
     for (int i = 0; i < code.length; i++) {
       if (code[i] == " ") {
@@ -64,7 +63,7 @@ class _CreateGamePage extends State<CreateGamePage> {
     return codeWord;
   }
 
-  List<Container> getPlayers(List<String> players) {
+  List<Container> getPlayersWidget(List<String> players) {
     List<Container> playerContainers = new List<Container>();
     if (players == null) return playerContainers;
     for (int i = 0; i < players.length; i++) {
@@ -117,7 +116,7 @@ class _CreateGamePage extends State<CreateGamePage> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: gameCode(code),
+                children: getGameCodeWidgets(code),
               ),
               SizedBox(
                 height: 10,
@@ -138,7 +137,7 @@ class _CreateGamePage extends State<CreateGamePage> {
               ),
               Expanded(
                 child: ListView(
-                  children: getPlayers(players),
+                  children: getPlayersWidget(players),
                 ),
               ),
               FlatButton(

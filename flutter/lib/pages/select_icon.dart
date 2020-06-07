@@ -68,6 +68,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
+    // Authorizing firebase read access
     await _signInAnonymously();
     Map respBody = await readResponse(response);
     User currUser = User(respBody["uid"], name, iconKey);
@@ -80,11 +81,9 @@ class _SelectIconPageState extends State<SelectIconPage> {
 
   Future<void> _signInAnonymously() async {
     try {
-      var f = await FirebaseAuth.instance.signInAnonymously();
-      var idToken = await f.user.getIdToken();
-      idToken.token;
+      await FirebaseAuth.instance.signInAnonymously();
     } catch (e) {
-      print(e); // TODO: show dialog with error
+      print(e); // TODO: Handle this error properly
     }
   }
 

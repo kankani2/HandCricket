@@ -1,8 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/pages/game_home.dart';
 import 'package:handcricket/constants.dart';
-import 'package:handcricket/pages/select_first_name.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/backend.dart';
 
@@ -68,7 +68,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
-
+    await _signInAnonymously();
     Map respBody = await readResponse(response);
     User currUser = User(respBody["uid"], name, iconKey);
     currUser.storeUserInfoToDisk();
@@ -76,6 +76,16 @@ class _SelectIconPageState extends State<SelectIconPage> {
       context,
       MaterialPageRoute(builder: (context) => GameHomePage()),
     );
+  }
+
+  Future<void> _signInAnonymously() async {
+    try {
+      var f = await FirebaseAuth.instance.signInAnonymously();
+      var idToken = await f.user.getIdToken();
+      idToken.token;
+    } catch (e) {
+      print(e); // TODO: show dialog with error
+    }
   }
 
   List<IconButton> getListOfIconWidgets() {

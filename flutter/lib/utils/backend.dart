@@ -37,7 +37,8 @@ String url(String endpoint) {
 
 /// request makes a HTTP request to the endpoint specified with the correct
 /// method type and body.
-Future<HttpClientResponse> request(HttpMethod method, String endpoint, Map<String, dynamic> body) {
+Future<HttpClientResponse> request(
+    HttpMethod method, String endpoint, Map<String, dynamic> body) {
   HttpClient client = new HttpClient();
   Uri uri = Uri.parse(url(endpoint));
 
@@ -58,7 +59,9 @@ Future<HttpClientResponse> request(HttpMethod method, String endpoint, Map<Strin
   }
 
   return futureReq.then((req) {
-    req.write(json.encode(body));
+    if (body.isNotEmpty) {
+      req.write(json.encode(body));
+    }
     return req.close();
   });
 }

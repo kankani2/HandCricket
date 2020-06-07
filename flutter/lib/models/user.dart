@@ -5,11 +5,7 @@ class User {
   String name;
   int icon;
 
-  User(String uid, String name, int icon) {
-    this.uid = uid;
-    this.name = name;
-    this.icon = icon;
-  }
+  User(this.uid, this.name, this.icon);
 
   void storeUserInfoToDisk() async {
     final prefs = await SharedPreferences.getInstance();
@@ -20,6 +16,7 @@ class User {
 
   static Future<User> getUserInfoFromDisk() async {
     final prefs = await SharedPreferences.getInstance();
-    return new User(prefs.getString("uid"), prefs.getString("name"), prefs.getInt("icon"));
+    return new User(
+        prefs.getString("uid"), prefs.getString("name"), prefs.getInt("icon"));
   }
 }

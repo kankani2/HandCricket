@@ -11,7 +11,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_database: ^3.1.6
   shared_preferences: ^0.5.7+3
+  firebase_auth: ^0.16.1
   carousel_slider: ^2.1.0
   cupertino_icons: ^0.1.3
 

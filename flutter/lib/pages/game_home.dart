@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:handcricket/pages/join_game.dart';
 import 'package:handcricket/pages/settings.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:flutter/widgets.dart';
+import 'package:handcricket/utils/backend.dart';
+import 'package:handcricket/models/game_info.dart';
+import 'package:handcricket/pages/create_game.dart';
 
 import '../constants.dart';
 
@@ -11,9 +15,36 @@ class GameHomePage extends StatefulWidget {
 }
 
 class _GameHomePageState extends State<GameHomePage> {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  void createGame() async {
+    var user = await User.getUserInfoFromDisk();
+    var response = await request(HttpMethod.POST, "/game", {"uid": user.uid});
+    if (!isSuccess(response)) {
+      final snackBar = SnackBar(content: Text('Game could not be created.'));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
+      return;
+    }
+    Map respBody = await readResponse(response);
+    GameInfo currGame = GameInfo(respBody["gameCode"], respBody["gameID"]);
+    await currGame.storeGameInfoToDisk();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => CreateGamePage()),
+    );
+  }
+
+  void joinGame() async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => JoinGamePage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: primaryColor,
       body: Container(
         padding: EdgeInsets.all(20),
@@ -25,7 +56,7 @@ class _GameHomePageState extends State<GameHomePage> {
                 Expanded(
                   child: FlatButton(
                     color: Colors.blue[700],
-                    onPressed: () {},
+                    onPressed: createGame,
                     child: Text(
                       'Create Room',
                       style: TextStyle(
@@ -47,7 +78,7 @@ class _GameHomePageState extends State<GameHomePage> {
                 Expanded(
                   child: FlatButton(
                     color: Colors.blue[700],
-                    onPressed: () {},
+                    onPressed: joinGame,
                     child: Text(
                       'Join Room',
                       style: TextStyle(

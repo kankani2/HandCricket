@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:http/http.dart';
 
 class CreateGamePage extends StatefulWidget {
   @override
@@ -162,8 +164,7 @@ class _CreateGamePage extends State<CreateGamePage> {
 
   void moveToTeamMatch() async {
     var gameInfo = await GameInfo.getGameInfoFromDisk();
-    var response =
-        await request(HttpMethod.POST, "/game/${gameInfo.gameID}/match", {});
+    var response = await post(url("/game/${gameInfo.gameID}/match"));
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('Could not move to team matching stage.'));
@@ -174,14 +175,14 @@ class _CreateGamePage extends State<CreateGamePage> {
   }
 
   Future<User> getUserFromID(String uid) async {
-    var response = await request(HttpMethod.GET, "/user/$uid", {});
+    var response = await get(url("/user/$uid"));
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('User could not be created in the database.'));
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return null;
     }
-    Map respBody = await readResponse(response);
+    Map respBody = json.decode(response.body);
     return User(uid, respBody["name"], respBody["icon"]);
   }
 

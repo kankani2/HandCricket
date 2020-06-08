@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -5,6 +7,7 @@ import 'package:handcricket/pages/game_home.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:http/http.dart';
 
 class SelectIconPage extends StatefulWidget {
   final String name;
@@ -60,8 +63,8 @@ class _SelectIconPageState extends State<SelectIconPage> {
   }
 
   void iconPressed(int iconKey) async {
-    var response = await request(
-        HttpMethod.POST, "/user", {"name": name, "icon": iconKey});
+    var response = await post(url("/user"),
+        body: json.encode({"name": name, "icon": iconKey}));
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('User could not be created in the database.'));
@@ -70,7 +73,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
     }
     // Authorizing firebase read access
     await _signInAnonymously();
-    Map respBody = await readResponse(response);
+    Map respBody = json.decode(response.body);
     User currUser = User(respBody["uid"], name, iconKey);
     currUser.storeUserInfoToDisk();
     Navigator.pushReplacement(

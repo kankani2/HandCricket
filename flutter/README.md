@@ -14,3 +14,12 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Configuration
+
+To be able to run flutter, you will require some secret files that have not been committed.
+
+- `lib/config.dart` - Contains `apiKey` (GCP project API Key) and `hostName` which is basically
+the `PROJECT-ID.appspot.com`.
+- `android/app/google-services.json` - Required for Firebase authentication.
+- `ios/Runner/GoogleService-Info.plist` - Required for Firebase authentication.

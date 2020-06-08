@@ -1,6 +1,8 @@
 runtime: java8
 instance_class: F1
+basic_scaling:
+  max_instances: 1
 
 env_variables:
   ENDPOINTS_SERVICE_NAME: "resounding-sled-278521.appspot.com"
-  ENDPOINTS_SERVICE_VERSION: "2020-06-04r0"
+  ENDPOINTS_SERVICE_VERSION: "2020-06-08r0"

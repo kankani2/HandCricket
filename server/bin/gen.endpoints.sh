@@ -1,3 +1,5 @@
+#!/bin/bash
+
 mvn clean
 mvn package
 
@@ -9,5 +11,3 @@ EP_SERVER="com.google.api.server.spi.EndpointsServlet"
 sed -i "" "s/${HC_SERVER}/${EP_SERVER}/g" src/main/webapp/WEB-INF/web.xml
 mvn endpoints-framework:openApiDocs
 sed -i "" "s/${EP_SERVER}/${HC_SERVER}/g" src/main/webapp/WEB-INF/web.xml
-
-gcloud endpoints services deploy target/openapi-docs/openapi.json

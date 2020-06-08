@@ -1,6 +1,8 @@
+#!/bin/bash
+
 # Needed by Google Endpoints java Framework
 export ENDPOINTS_SERVICE_NAME=resounding-sled-278521.appspot.com
-export ENDPOINTS_SERVICE_VERSION=2020-06-04r0
+export ENDPOINTS_SERVICE_VERSION=2020-06-08r0
 
 # Regenerate target directory.
 mvn clean

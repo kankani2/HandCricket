@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:handcricket/pages/join_game.dart';
 import 'package:handcricket/pages/settings.dart';
@@ -6,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/pages/create_game.dart';
+import 'package:http/http.dart';
 
 import '../constants.dart';
 
@@ -19,13 +22,14 @@ class _GameHomePageState extends State<GameHomePage> {
 
   void createGame() async {
     var user = await User.getUserInfoFromDisk();
-    var response = await request(HttpMethod.POST, "/game", {"uid": user.uid});
+    var response =
+        await post(url("/game"), body: json.encode({"uid": user.uid}));
     if (!isSuccess(response)) {
       final snackBar = SnackBar(content: Text('Game could not be created.'));
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
-    Map respBody = await readResponse(response);
+    Map respBody = jsonDecode(response.body);
     GameInfo currGame = GameInfo(respBody["gameCode"], respBody["gameID"]);
     await currGame.storeGameInfoToDisk();
     Navigator.pushReplacement(

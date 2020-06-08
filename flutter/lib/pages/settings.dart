@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:http/http.dart';
 
 class SettingsPage extends StatefulWidget {
   final User currUser;
@@ -53,8 +56,8 @@ class _SettingsPageState extends State<SettingsPage> {
   _saveSettings() async {
     currUser.icon = currentIndexForSlider;
 
-    var response = await request(HttpMethod.PUT, "/user/${currUser.uid}",
-        {"name": currUser.name, "icon": currUser.icon});
+    var response = await put(url("/user/${currUser.uid}"),
+        body: json.encode({"name": currUser.name, "icon": currUser.icon}));
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('Database could not be updated.'));

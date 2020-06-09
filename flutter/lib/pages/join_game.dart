@@ -126,26 +126,21 @@ class _JoinGamePage extends State<JoinGamePage> {
 
   void handleEnteredCode() async {
     var code = new StringBuffer();
-    print(code.toString());
     for (int i = 0; i < codeWordLength; i++) {
       if (i == codeWordLength / 2) {
         code.write(" ");
       }
       code.write(textControllers[i].text);
     }
-    print(code.toString());
     var user = await User.getUserInfoFromDisk();
-    print(user.uid);
     var response = await post(url("/game/player/${user.uid}"),
         body: json.encode({"gameCode": code.toString()}));
-    print(response.statusCode);
     if (!isSuccess(response)) {
       final snackBar = SnackBar(content: Text('Game could not be joined.'));
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
     Map respBody = json.decode(response.body);
-    print(respBody);
     GameInfo gameInfo = GameInfo(respBody["gameCode"], respBody["gameID"]);
     gameInfo.storeGameInfoToDisk();
 

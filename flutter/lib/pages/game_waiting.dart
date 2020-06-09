@@ -26,16 +26,12 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
 
   void addListenerForGameMessage(GameInfo game) {
     _gamesRef.child(game.gameID).child("message").onValue.listen((event) async {
-      print("message is $message");
-      print("event value is ${event.snapshot.value}");
       if (event.snapshot.value == null) {
-        print("message is null");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => MainGamePage()),
         );
       } else {
-        print("setting message");
         setState(() {
           message = event.snapshot.value;
         });

@@ -21,7 +21,7 @@ class _GameHomePageState extends State<GameHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void createGame() async {
-    var user = await User.getUserInfoFromDisk();
+    var user = await User.getUserFromDisk();
     var response =
         await post(url("/game"), body: json.encode({"uid": user.uid}));
     if (!isSuccess(response)) {
@@ -101,7 +101,7 @@ class _GameHomePageState extends State<GameHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          User.getUserInfoFromDisk().then((user) {
+          User.getUserFromDisk().then((user) {
             Navigator.push(
               context,
               MaterialPageRoute(

@@ -7,7 +7,7 @@ import 'package:handcricket/models/user.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  User.getUserInfoFromDisk().then((user) {
+  User.getUserFromDisk().then((user) {
     if (user.uid == null) {
       runApp(FirstTime());
     } else {

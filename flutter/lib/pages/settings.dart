@@ -65,7 +65,7 @@ class _SettingsPageState extends State<SettingsPage> {
       return;
     }
 
-    currUser.storeUserInfoToDisk();
+    currUser.storeUserToDisk();
     Navigator.pop(context);
   }
 

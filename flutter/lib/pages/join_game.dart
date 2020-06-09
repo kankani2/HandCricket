@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
+import 'package:handcricket/models/game_info.dart';
+import 'package:handcricket/models/user.dart';
+import 'package:handcricket/pages/game_waiting.dart';
+import 'package:handcricket/utils/backend.dart';
+import 'package:http/http.dart';
 
 class JoinGamePage extends StatefulWidget {
   @override
@@ -10,6 +17,7 @@ class JoinGamePage extends StatefulWidget {
 class _JoinGamePage extends State<JoinGamePage> {
   List<TextEditingController> textControllers =
       List.generate(codeWordLength, (i) => TextEditingController());
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<Container> getTextFields(bool secondWord) {
     int start = 0;
@@ -56,6 +64,7 @@ class _JoinGamePage extends State<JoinGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: primaryColor,
       body: SafeArea(
         child: Container(
@@ -97,14 +106,7 @@ class _JoinGamePage extends State<JoinGamePage> {
               ),
               FlatButton(
                 color: Colors.blue[700],
-                onPressed: () {
-                  String code = "";
-                  for (int i = 0; i < codeWordLength; i++) {
-                    code += textControllers[i].text;
-                  }
-                  print(code);
-                  // TODO: Handle entered code
-                },
+                onPressed: handleEnteredCode,
                 child: Text(
                   'Done',
                   style: TextStyle(
@@ -119,6 +121,37 @@ class _JoinGamePage extends State<JoinGamePage> {
           ),
         ),
       ),
+    );
+  }
+
+  void handleEnteredCode() async {
+    var code = new StringBuffer();
+    print(code.toString());
+    for (int i = 0; i < codeWordLength; i++) {
+      if (i == codeWordLength / 2) {
+        code.write(" ");
+      }
+      code.write(textControllers[i].text);
+    }
+    print(code.toString());
+    var user = await User.getUserInfoFromDisk();
+    print(user.uid);
+    var response = await post(url("/game/player/${user.uid}"),
+        body: json.encode({"gameCode": code.toString()}));
+    print(response.statusCode);
+    if (!isSuccess(response)) {
+      final snackBar = SnackBar(content: Text('Game could not be joined.'));
+      _scaffoldKey.currentState.showSnackBar(snackBar);
+      return;
+    }
+    Map respBody = json.decode(response.body);
+    print(respBody);
+    GameInfo gameInfo = GameInfo(respBody["gameCode"], respBody["gameID"]);
+    gameInfo.storeGameInfoToDisk();
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => GameWaitingPage()),
     );
   }
 }

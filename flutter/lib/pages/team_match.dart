@@ -9,7 +9,7 @@ class TeamMatchPage extends StatefulWidget {
 class _TeamMatchPageState extends State<TeamMatchPage> {
   @override
   Widget build(BuildContext context) {
-    Scaffold(
+    return Scaffold(
       backgroundColor: primaryColor,
       body: SafeArea(
         child: Container(

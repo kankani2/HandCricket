@@ -1,16 +1,10 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
-import 'package:handcricket/models/user.dart';
 import 'package:handcricket/pages/team_match.dart';
 import 'package:handcricket/widgets/player_list.dart';
 import 'package:handcricket/utils/backend.dart';
-import 'package:http/http.dart';
 
 class CreateGamePage extends StatefulWidget {
   @override
@@ -136,7 +130,8 @@ class _CreateGamePage extends State<CreateGamePage> {
 
   void moveToTeamMatch() async {
     var gameInfo = await GameInfo.getGameInfoFromDisk();
-    var response = await post(url("/game/${gameInfo.gameID}/match"));
+    var response =
+        await request(HttpMethod.POST, "/game/${gameInfo.gameID}/match");
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('Could not move to team matching stage.'));

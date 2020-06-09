@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:handcricket/utils/backend.dart';
-import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
@@ -27,10 +26,10 @@ class User {
 
   static Future<User> getUser(
       String uid, GlobalKey<ScaffoldState> scaffoldKey) async {
-    var response = await get(url("/user/$uid"));
+    var response = await request(HttpMethod.GET, "/user/$uid");
     if (!isSuccess(response)) {
       final snackBar =
-          SnackBar(content: Text('User could not be created in the database.'));
+          SnackBar(content: Text('User not found in the database.'));
       scaffoldKey.currentState.showSnackBar(snackBar);
       return null;
     }

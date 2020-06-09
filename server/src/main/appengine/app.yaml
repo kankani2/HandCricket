@@ -5,4 +5,4 @@ basic_scaling:
 
 env_variables:
   ENDPOINTS_SERVICE_NAME: "resounding-sled-278521.appspot.com"
-  ENDPOINTS_SERVICE_VERSION: "2020-06-08r0"
+  ENDPOINTS_SERVICE_VERSION: "2020-06-09r0"

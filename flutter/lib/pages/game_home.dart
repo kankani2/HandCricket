@@ -8,7 +8,7 @@ import 'package:flutter/widgets.dart';
 import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/pages/create_game.dart';
-import 'package:http/http.dart';
+import 'package:handcricket/utils/firebase_auth.dart';
 
 import '../constants.dart';
 
@@ -23,7 +23,7 @@ class _GameHomePageState extends State<GameHomePage> {
   void createGame() async {
     var user = await User.getUserFromDisk();
     var response =
-        await post(url("/game"), body: json.encode({"uid": user.uid}));
+        await request(HttpMethod.POST, "/game", body: {"uid": user.uid});
     if (!isSuccess(response)) {
       final snackBar = SnackBar(content: Text('Game could not be created.'));
       _scaffoldKey.currentState.showSnackBar(snackBar);

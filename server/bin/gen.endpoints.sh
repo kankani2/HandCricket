@@ -11,3 +11,5 @@ EP_SERVER="com.google.api.server.spi.EndpointsServlet"
 sed -i "" "s/${HC_SERVER}/${EP_SERVER}/g" src/main/webapp/WEB-INF/web.xml
 mvn endpoints-framework:openApiDocs
 sed -i "" "s/${EP_SERVER}/${HC_SERVER}/g" src/main/webapp/WEB-INF/web.xml
+
+python3 bin/openapi_intercept.py target/openapi-docs/openapi.json

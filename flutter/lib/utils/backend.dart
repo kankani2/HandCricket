@@ -17,7 +17,7 @@ bool isSuccess(Response response) {
 String url(String endpoint) {
   assert(endpoint[0] == '/'); // the endpoint must start with a forward slash
   endpoint = "/_ah/api/handcricket/v1$endpoint";
-  if (DEV_MODE) {
+  if (devMode) {
     return "http://localhost:8080$endpoint";
   }
   return "https://$hostName$endpoint";
@@ -26,7 +26,7 @@ String url(String endpoint) {
 /// Generates header for every http request based on the following documentation.
 /// https://cloud.google.com/endpoints/docs/openapi/authenticating-users-firebase
 Future<Map<String, String>> header() async {
-  if (DEV_MODE) {
+  if (devMode) {
     return null;
   }
 

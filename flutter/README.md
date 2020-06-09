@@ -19,7 +19,8 @@ samples, guidance on mobile development, and a full API reference.
 
 To be able to run flutter, you will require some secret files that have not been committed.
 
-- `lib/config.dart` - Contains `apiKey` (GCP project API Key) and `hostName` which is basically
-the `PROJECT-ID.appspot.com`.
+- `lib/config.dart` - Contains `devMode` boolean which tells whether we are running the app against
+server running locally or prod app engine server. `hostName` string which is basically the
+`PROJECT-ID.appspot.com`.
 - `android/app/google-services.json` - Required for Firebase integration.
 - `ios/Runner/GoogleService-Info.plist` - Required for Firebase integration.

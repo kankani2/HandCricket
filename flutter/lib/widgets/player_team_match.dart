@@ -3,21 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 
-class PlayerListWidget extends StatefulWidget {
+class PlayerTeamMatchWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
 
-  PlayerListWidget({Key key, @required this.scaffoldKey}) : super(key: key);
+  PlayerTeamMatchWidget({Key key, @required this.scaffoldKey})
+      : super(key: key);
 
   @override
-  _PlayerListWidgetState createState() => _PlayerListWidgetState(scaffoldKey);
+  _PlayerTeamMatchWidgetState createState() =>
+      _PlayerTeamMatchWidgetState(scaffoldKey);
 }
 
-class _PlayerListWidgetState extends State<PlayerListWidget> {
+class _PlayerTeamMatchWidgetState extends State<PlayerTeamMatchWidget> {
   List<User> players = new List<User>();
   GlobalKey<ScaffoldState> scaffoldKey;
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
-
-  _PlayerListWidgetState(this.scaffoldKey);
+  //List<int> groupValue = new List(8);
+  int group = -1;
+  _PlayerTeamMatchWidgetState(this.scaffoldKey);
 
   @override
   void initState() {
@@ -44,30 +47,43 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        children: getPlayerNameWidgets(players),
+        children: getPlayerTeamWidgets(players),
       ),
     );
   }
 
-  static List<Container> getPlayerNameWidgets(List<User> players) {
-    List<Container> playerContainers = new List<Container>();
+  List<Row> getPlayerTeamWidgets(List<User> players) {
+    List<Row> playerContainers = new List<Row>();
     if (players == null) return playerContainers;
     for (int i = 0; i < players.length; i++) {
+      //groupValue[i] = -1;
       playerContainers.add(
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 10),
-          decoration: BoxDecoration(
-            border: Border.all(
-              color: Colors.black,
+        Row(
+          children: <Widget>[
+            Text(
+              players[i].name,
             ),
-            borderRadius: BorderRadius.all(Radius.circular(20)),
-            color: Colors.grey[300],
-          ),
-          child: Text(
-            players[i].name,
-            style: TextStyle(fontSize: 25.0),
-            textAlign: TextAlign.center,
-          ),
+            Radio(
+              value: 0,
+              groupValue: group,
+              onChanged: (selected) {
+                print(selected);
+                setState(() {
+                  group = selected;
+                });
+              },
+            ),
+            Radio(
+              value: 1,
+              groupValue: group,
+              onChanged: (selected) {
+                print(selected);
+                setState(() {
+                  group = selected;
+                });
+              },
+            ),
+          ],
         ),
       );
     }

@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
+import 'package:handcricket/pages/team_match.dart';
 import 'package:handcricket/widgets/player_list.dart';
 import 'package:handcricket/utils/backend.dart';
 import 'package:http/http.dart';
@@ -142,6 +143,9 @@ class _CreateGamePage extends State<CreateGamePage> {
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
-    // TODO: Navigate to team matching stage.
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => TeamMatchPage()),
+    );
   }
 }

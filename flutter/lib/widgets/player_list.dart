@@ -34,9 +34,11 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
         .onChildAdded
         .listen((event) async {
       User playerInfo = await User.getUser(event.snapshot.key, scaffoldKey);
-      setState(() {
-        players.add(playerInfo);
-      });
+      if (playerInfo != null) {
+        setState(() {
+          players.add(playerInfo);
+        });
+      }
     });
   }
 

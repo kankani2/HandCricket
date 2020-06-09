@@ -24,7 +24,7 @@ String url(String endpoint) {
 }
 
 /// Generates header for every http request based on the following documentation.
-/// https://cloud.google.com/endpoints/docs/openapi/authenticating-users-firebase
+/// https://cloud.google.com/endpoints/docs/openapi/authenticating-users-firebase#making_an_authenicated_call_to_an_endpoints_api
 Future<Map<String, String>> header() async {
   if (devMode) {
     return null;

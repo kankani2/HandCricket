@@ -29,7 +29,7 @@ class User {
     var response = await request(HttpMethod.GET, "/user/$uid");
     if (!isSuccess(response)) {
       final snackBar =
-          SnackBar(content: Text('User could not be created in the database.'));
+          SnackBar(content: Text('User not found in the database.'));
       scaffoldKey.currentState.showSnackBar(snackBar);
       return null;
     }

@@ -21,7 +21,7 @@ class _GameHomePageState extends State<GameHomePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void createGame() async {
-    var user = await User.getUserInfoFromDisk();
+    var user = await User.getUserFromDisk();
     var response =
         await request(HttpMethod.POST, "/game", body: {"uid": user.uid});
     if (!isSuccess(response)) {
@@ -47,7 +47,6 @@ class _GameHomePageState extends State<GameHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    getFirebaseAuthToken().then((value) => print(value));
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: primaryColor,
@@ -102,7 +101,7 @@ class _GameHomePageState extends State<GameHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          User.getUserInfoFromDisk().then((user) {
+          User.getUserFromDisk().then((user) {
             Navigator.push(
               context,
               MaterialPageRoute(

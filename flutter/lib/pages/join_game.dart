@@ -131,7 +131,7 @@ class _JoinGamePage extends State<JoinGamePage> {
       }
       code.write(textControllers[i].text);
     }
-    var user = await User.getUserInfoFromDisk();
+    var user = await User.getUserFromDisk();
     var response = await request(HttpMethod.POST, "/game/player/${user.uid}",
         body: {"gameCode": code.toString()});
     if (!isSuccess(response)) {

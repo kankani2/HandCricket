@@ -8,6 +8,8 @@ if len(sys.argv) != 2:
 with open(sys.argv[1]) as file:
     apiSpec = json.load(file)
 
+    # Add security properties as required for firebase authentication.
+    # https://cloud.google.com/endpoints/docs/openapi/authenticating-users-firebase#configuring_your_openapi_document
     projectId = apiSpec["host"][: apiSpec["host"].index(".appspot.com")]
     apiSpec["securityDefinitions"] = {
         "firebase": {

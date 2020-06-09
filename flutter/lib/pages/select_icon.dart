@@ -75,7 +75,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
     await _signInAnonymously();
     Map respBody = json.decode(response.body);
     User currUser = User(respBody["uid"], name, iconKey);
-    currUser.storeUserInfoToDisk();
+    currUser.storeUserToDisk();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => GameHomePage()),

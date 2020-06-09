@@ -8,7 +8,6 @@ import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/backend.dart';
-import 'package:http/http.dart';
 
 class CreateGamePage extends StatefulWidget {
   @override
@@ -164,7 +163,8 @@ class _CreateGamePage extends State<CreateGamePage> {
 
   void moveToTeamMatch() async {
     var gameInfo = await GameInfo.getGameInfoFromDisk();
-    var response = await post(url("/game/${gameInfo.gameID}/match"));
+    var response =
+        await request(HttpMethod.POST, "/game/${gameInfo.gameID}/match");
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('Could not move to team matching stage.'));
@@ -175,7 +175,7 @@ class _CreateGamePage extends State<CreateGamePage> {
   }
 
   Future<User> getUserFromID(String uid) async {
-    var response = await get(url("/user/$uid"));
+    var response = await request(HttpMethod.GET, "/user/$uid");
     if (!isSuccess(response)) {
       final snackBar =
           SnackBar(content: Text('User could not be created in the database.'));

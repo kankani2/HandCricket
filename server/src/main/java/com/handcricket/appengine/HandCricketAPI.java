@@ -1,6 +1,5 @@
 package com.handcricket.appengine;
 
-import com.google.api.server.spi.config.AnnotationBoolean;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
@@ -22,8 +21,7 @@ import java.util.Random;
 
 @Api(
         name = "handcricket",
-        version = "v1",
-        apiKeyRequired = AnnotationBoolean.TRUE
+        version = "v1"
 )
 public class HandCricketAPI {
     @ApiMethod(

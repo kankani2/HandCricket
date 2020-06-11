@@ -108,7 +108,7 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
               ),
               FlatButton(
                 color: Colors.blue[900],
-                onPressed: onTeamMatchDone(),
+                onPressed: onTeamMatchDone,
                 child: Text(
                   'Done',
                   style: TextStyle(

@@ -128,7 +128,7 @@ class _CreateGamePage extends State<CreateGamePage> {
     );
   }
 
-  void moveToTeamMatch() async {
+  Future<void> moveToTeamMatch() async {
     var gameInfo = await GameInfo.getGameInfoFromDisk();
     var response =
         await request(HttpMethod.POST, "/game/${gameInfo.gameID}/match");

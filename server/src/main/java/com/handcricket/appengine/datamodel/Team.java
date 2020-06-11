@@ -1,19 +1,17 @@
 package com.handcricket.appengine.datamodel;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class Team {
-    private ArrayList<String> redTeam;
-    private ArrayList<String> blueTeam;
+    private final ArrayList<String> redTeam;
+    private final ArrayList<String> blueTeam;
 
-    public Team(){
+    public Team() {
         redTeam = new ArrayList<>();
         blueTeam = new ArrayList<>();
     }
 
-    public Team(ArrayList<String> red, ArrayList<String> blue){
+    public Team(ArrayList<String> red, ArrayList<String> blue) {
         redTeam = new ArrayList<>();
         redTeam.addAll(red);
         blueTeam = new ArrayList<>();
@@ -23,6 +21,7 @@ public class Team {
     public ArrayList<String> getRedTeam() {
         return redTeam;
     }
+
     public ArrayList<String> getBlueTeam() {
         return blueTeam;
     }
@@ -30,6 +29,7 @@ public class Team {
     public void setRedTeam(ArrayList<String> red) {
         redTeam.addAll(red);
     }
+
     public void setBlueTeam(ArrayList<String> blue) {
         blueTeam.addAll(blue);
     }

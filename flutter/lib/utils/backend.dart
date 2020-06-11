@@ -48,8 +48,10 @@ Future<Response> request(HttpMethod method, String endpoint,
     case HttpMethod.GET:
       return get(_url, headers: _header);
     case HttpMethod.POST:
+      if (body == null) return post(_url, headers: _header);
       return post(_url, body: _body, headers: _header);
     case HttpMethod.PUT:
+      if (body == null) return put(_url, headers: _header);
       return put(_url, body: _body, headers: _header);
   }
 

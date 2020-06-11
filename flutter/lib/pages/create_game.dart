@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
+import 'package:handcricket/pages/team_match.dart';
 import 'package:handcricket/widgets/player_list.dart';
 import 'package:handcricket/utils/backend.dart';
 
@@ -127,7 +128,7 @@ class _CreateGamePage extends State<CreateGamePage> {
     );
   }
 
-  void moveToTeamMatch() async {
+  Future<void> moveToTeamMatch() async {
     var gameInfo = await GameInfo.getGameInfoFromDisk();
     var response =
         await request(HttpMethod.POST, "/game/${gameInfo.gameID}/match");
@@ -137,6 +138,9 @@ class _CreateGamePage extends State<CreateGamePage> {
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
-    // TODO: Navigate to team matching stage.
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => TeamMatchPage()),
+    );
   }
 }

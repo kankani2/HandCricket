@@ -46,12 +46,12 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        children: getPlayerWidgets(players),
+        children: getPlayerNameWidgets(players),
       ),
     );
   }
 
-  static List<Container> getPlayerWidgets(List<User> players) {
+  static List<Container> getPlayerNameWidgets(List<User> players) {
     List<Container> playerContainers = new List<Container>();
     if (players == null) return playerContainers;
     for (int i = 0; i < players.length; i++) {

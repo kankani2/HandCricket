@@ -24,6 +24,8 @@ class _GameHomePageState extends State<GameHomePage> {
     var user = await User.getUserFromDisk();
     var response =
         await request(HttpMethod.POST, "/game", body: {"uid": user.uid});
+    print(user.uid);
+    print(response.statusCode);
     if (!isSuccess(response)) {
       final snackBar = SnackBar(content: Text('Game could not be created.'));
       _scaffoldKey.currentState.showSnackBar(snackBar);

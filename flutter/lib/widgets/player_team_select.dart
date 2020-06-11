@@ -17,8 +17,7 @@ class PlayerTeamSelectWidget extends StatefulWidget {
   _PlayerTeamSelectWidgetState createState() => _mState;
 
   String getTeamName() {
-    if (_mState.group == 0) return "redTeam";
-    return "blueTeam";
+    return teamMapping[_mState.group].name;
   }
 
   String getUID() {
@@ -32,41 +31,40 @@ class _PlayerTeamSelectWidgetState extends State<PlayerTeamSelectWidget> {
 
   _PlayerTeamSelectWidgetState(this.player, this.group);
 
+  List<Radio> getRadios() {
+    var radios = new List<Radio>();
+    teamMapping.forEach((index, team) {
+      radios.add(Radio(
+        value: index,
+        groupValue: group,
+        activeColor: team.color,
+        onChanged: (selected) {
+          setState(() {
+            group = selected;
+          });
+        },
+      ));
+    });
+    return radios;
+  }
+
   @override
   Widget build(BuildContext context) {
+    var children = new List<Widget>();
+    children.add(Expanded(
+      child: Text(
+        player.name,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 35,
+          fontFamily: primaryfont,
+        ),
+      ),
+    ));
+    children.addAll(getRadios());
+
     return Row(
-      children: <Widget>[
-        Expanded(
-          child: Text(
-            player.name,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 35,
-              fontFamily: primaryfont,
-            ),
-          ),
-        ),
-        Radio(
-          value: 0,
-          groupValue: group,
-          activeColor: Colors.red,
-          onChanged: (selected) {
-            setState(() {
-              group = selected;
-            });
-          },
-        ),
-        Radio(
-          value: 1,
-          focusColor: Colors.blue[900],
-          groupValue: group,
-          onChanged: (selected) {
-            setState(() {
-              group = selected;
-            });
-          },
-        ),
-      ],
+      children: children,
     );
   }
 }

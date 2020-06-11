@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:handcricket/models/team.dart';
 
 final iconMap = {
   0: "images/icons8-crane-bird-50.png",
@@ -10,6 +11,11 @@ final iconMap = {
   6: "images/icons8-parrot-50.png",
   7: "images/icons8-swan-50.png",
   8: "images/icons8-tiger-butterfly-50.png",
+};
+
+final teamMapping = {
+  0: Team("redTeam", Colors.red),
+  1: Team("blueTeam", Colors.blue[900]),
 };
 
 const String primaryfont = "BalsamiqSans";

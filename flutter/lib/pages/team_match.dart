@@ -7,6 +7,8 @@ import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/widgets/player_team_select.dart';
 import 'package:http/http.dart';
 
+import 'main_game.dart';
+
 class TeamMatchPage extends StatefulWidget {
   @override
   _TeamMatchPageState createState() => _TeamMatchPageState();
@@ -42,7 +44,7 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
       for (int i = 0; i < players.length; i++) {
         playerContainers.add(PlayerTeamSelectWidget(
           player: players[i],
-          group: i % 2,
+          group: i % teamMapping.length,
         ));
       }
     });
@@ -50,8 +52,9 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
 
   onTeamMatchDone() async {
     Map<String, dynamic> body = new Map();
-    body["redTeam"] = new List<String>();
-    body["blueTeam"] = new List<String>();
+    teamMapping.forEach((index, team) {
+      body[team.name] = new List<String>();
+    });
     playerContainers.forEach((container) {
       body[container.getTeamName()].add(container.getUID());
     });
@@ -64,6 +67,9 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
       _scaffoldKey.currentState.showSnackBar(snackBar);
       return;
     }
+
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MainGamePage()));
   }
 
   @override

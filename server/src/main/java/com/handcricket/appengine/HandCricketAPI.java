@@ -220,7 +220,7 @@ public class HandCricketAPI {
         }
     }
 
-    private String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
+    private static String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
         String redWins = "Red team wins! ";
         String blueWins = "Blue team wins! ";
 
@@ -233,7 +233,7 @@ public class HandCricketAPI {
         }
     }
 
-    private void updateGameStats(String gameID, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
+    public static void updateGameStats(String gameID, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
 
         // Get game snapshot
         DataSnapshot gameSnapshot = DB.getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES));
@@ -299,8 +299,6 @@ public class HandCricketAPI {
                         message = getMessageForWinner(redTeamBatting, false);
                     }
                 }
-
-
             }
 
             // Move current batter to end of the list
@@ -342,7 +340,6 @@ public class HandCricketAPI {
             bowlingTeam.remove(0);
             bowlingTeam.add(currBowlerUID);
         }
-
 
         // Update overall stats, team lists, current batting team to Firebase
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats").setValue(stats);

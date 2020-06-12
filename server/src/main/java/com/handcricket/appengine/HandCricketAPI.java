@@ -208,11 +208,11 @@ public class HandCricketAPI {
     }
 
     @ApiMethod(
-            name = "updateGame",
+            name = "update",
             httpMethod = ApiMethod.HttpMethod.POST,
-            path = "game/{gameID}/updateGame}"
+            path = "game/{gameID}/update"
     )
-    public void updateGame(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+    public void update(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         DB.gameMustExist_sync(gameID);
 
         // Set hands value to -1
@@ -225,7 +225,7 @@ public class HandCricketAPI {
         updateGameStats(gameID, secretHand.getBat(), secretHand.getBowl());
     }
 
-    private static String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
+    private String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
         String redWins = "Red team wins! ";
         String blueWins = "Blue team wins! ";
 
@@ -238,7 +238,7 @@ public class HandCricketAPI {
         }
     }
 
-    public static void updateGameStats(String gameID, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
+    private void updateGameStats(String gameID, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
 
         // Get game snapshot
         DataSnapshot gameSnapshot = DB.getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES));

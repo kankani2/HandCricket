@@ -1,7 +1,7 @@
 package com.handcricket.appengine.datamodel;
 
 public class Stats {
-    private int score;
+    private int runs;
     private int balls;
     private int wickets;
     private int target; // set to -1 during first innings
@@ -10,19 +10,19 @@ public class Stats {
         this.target = -1;
     }
 
-    public Stats(int score, int balls, int wickets, int target) {
-        this.score = score;
+    public Stats(int runs, int balls, int wickets, int target) {
+        this.runs = runs;
         this.balls = balls;
         this.wickets = wickets;
         this.target = target;
     }
 
-    public int getScore() {
-        return score;
+    public int getRuns() {
+        return runs;
     }
 
-    public void setScore(int score) {
-        this.score = score;
+    public void setRuns(int runs) {
+        this.runs = runs;
     }
 
     public int getBalls() {

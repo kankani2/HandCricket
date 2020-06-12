@@ -47,35 +47,8 @@ public class DB {
         });
     }
 
-    static Stats getStats_sync(String gameID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats"));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<Stats>() {
-        });
-    }
-
-    static PlayerStats getPlayerStats_sync(String gameID, String UID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(UID));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<PlayerStats>() {
-        });
-    }
-
-    static Teams getTeams_sync(String gameID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams"));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<Teams>() {
-        });
-    }
-
-    static boolean isRedTeamBatting_sync(String gameID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redTeamBatting"));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<Boolean>() {
+    static PlayerStats getPlayerStats_sync(DataSnapshot gameSnapshot, String gameID, String UID) {
+        return gameSnapshot.child(gameID).child("players").child(UID).getValue(new GenericTypeIndicator<PlayerStats>() {
         });
     }
 
@@ -92,7 +65,7 @@ public class DB {
         mustExist(snapshot);
     }
 
-    private static void mustExist(DataSnapshot snapshot) throws NotFoundException {
+    static void mustExist(DataSnapshot snapshot) throws NotFoundException {
         if (!snapshot.exists()) {
             throw new NotFoundException(String.format("Resource with ID %s not found.", snapshot.getKey()));
         }

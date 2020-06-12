@@ -7,8 +7,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
-import com.handcricket.appengine.datamodel.Game;
-import com.handcricket.appengine.datamodel.User;
+import com.handcricket.appengine.datamodel.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -16,12 +16,14 @@ public class DB {
     public static final String USERS = "users";
     public static final String GAMES = "games";
     public static final String CODES = "codes";
+    public static final String SECRET = "secret";
 
     static String getGameCode_sync(String gameID) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("code"));
         mustExist(snapshot);
 
-        return snapshot.getValue(new GenericTypeIndicator<String>() {});
+        return snapshot.getValue(new GenericTypeIndicator<String>() {
+        });
     }
 
     static void gameMustExist_sync(String gameID) throws InternalServerErrorException, NotFoundException {
@@ -33,14 +35,56 @@ public class DB {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.USERS).child(uid));
         mustExist(snapshot);
 
-        return snapshot.getValue(new GenericTypeIndicator<User>() {});
+        return snapshot.getValue(new GenericTypeIndicator<User>() {
+        });
+    }
+
+    static Hands getSecret_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.SECRET).child(gameID));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<Hands>() {
+        });
+    }
+
+    static Stats getStats_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats"));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<Stats>() {
+        });
+    }
+
+    static PlayerStats getPlayerStats_sync(String gameID, String UID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(UID));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<PlayerStats>() {
+        });
+    }
+
+    static Teams getTeams_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams"));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<Teams>() {
+        });
+    }
+
+    static boolean isRedTeamBatting_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redTeamBatting"));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<Boolean>() {
+        });
     }
 
     static String getGameIdFrom(String gameCode) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.CODES).child(gameCode));
         mustExist(snapshot);
 
-        return snapshot.getValue(new GenericTypeIndicator<String>() {});
+        return snapshot.getValue(new GenericTypeIndicator<String>() {
+        });
     }
 
     static void userMustExist_sync(String uid) throws InternalServerErrorException, NotFoundException {
@@ -65,7 +109,8 @@ public class DB {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
         try {

@@ -8,6 +8,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * HandCricketServlet is a hacky way to intercept EndpointsServlet initialization code to be able to access
@@ -15,6 +19,7 @@ import javax.servlet.ServletException;
  */
 public class HandCricketServlet extends EndpointsServlet {
     static DatabaseReference firebase;
+    static BlockingQueue<String> gameIDs;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -29,5 +34,7 @@ public class HandCricketServlet extends EndpointsServlet {
                 .build();
         FirebaseApp.initializeApp(options);
         firebase = FirebaseDatabase.getInstance().getReference();
+
+        gameIDs = new LinkedBlockingQueue<String>();
     }
 }

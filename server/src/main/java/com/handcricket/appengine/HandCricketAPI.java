@@ -7,12 +7,7 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.handcricket.appengine.datamodel.UID;
-import com.handcricket.appengine.datamodel.User;
-import com.handcricket.appengine.datamodel.GameInfo;
-import com.handcricket.appengine.datamodel.Game;
-import com.handcricket.appengine.datamodel.GameCode;
-import com.handcricket.appengine.datamodel.Team;
+import com.handcricket.appengine.datamodel.*;
 
 
 import java.io.FileNotFoundException;
@@ -124,7 +119,7 @@ public class HandCricketAPI {
     public GameInfo addPlayer(GameCode gameCode, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
         DB.userMustExist_sync(uid);
         String gameID = DB.getGameIdFrom(gameCode.getGameCode());
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).setValue(0);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).setValue(new PlayerStats());
         return new GameInfo(gameCode.getGameCode(), gameID);
     }
 
@@ -140,9 +135,11 @@ public class HandCricketAPI {
     }
 
     private void addPlayersToTeam(String teamName, ArrayList<String> team, String gameID) {
-        team.forEach(val -> {
-            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(val).setValue(teamName);
-        });
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child(teamName).setValue(team);
+    }
+
+    private void setTeamStatus(Boolean bool, String gameID) {
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redBatting").setValue(bool);
     }
 
     @ApiMethod(
@@ -150,12 +147,26 @@ public class HandCricketAPI {
             httpMethod = ApiMethod.HttpMethod.POST,
             path = "game/{gameID}/start"
     )
-    public void startGame(Team team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
-        //Store assigned team value for each player
-        ArrayList<String> blueTeam = team.getBlueTeam();
-        ArrayList<String> redTeam = team.getRedTeam();
-        addPlayersToTeam("red", redTeam, gameID);
-        addPlayersToTeam("blue", blueTeam, gameID);
+    public void startGame(Teams team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        // Store assigned team value for each player
+        addPlayersToTeam("red", team.getRed(), gameID);
+        addPlayersToTeam("blue", team.getBlue(), gameID);
+
+        // Assign a team to batting randomly
+        int randomNum = new Random().nextInt(2);
+        if (randomNum == 0) {
+            setTeamStatus(true, gameID);
+        } else {
+            setTeamStatus(false, gameID);
+        }
+
+        // Set bat and bowl in secret to -1
+        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).child("bat").setValue(-1);
+        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).child("bowl").setValue(-1);
+
+        // Initialize game stats
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats").setValue(new Stats());
+
         // Update game message to null hence deleting the node
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue(null);
     }
@@ -171,5 +182,126 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
         // Update game message
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue("The host is selecting teams...");
+    }
+
+    @ApiMethod(
+            name = "bowl",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game/{gameID}/bowl/{num}"
+    )
+    public void bowl(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
+        DB.gameMustExist_sync(gameID);
+        // Update secret node
+        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).child("bowl").setValue(num);
+    }
+
+    @ApiMethod(
+            name = "bat",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game/{gameID}/bat/{num}"
+    )
+    public void bat(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
+        DB.gameMustExist_sync(gameID);
+
+        // Set hands value to -1
+        HandCricketServlet.firebase.child(DB.GAMES).child("hands").setValue(new Hands());
+
+        // Update secret node
+        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).child("bat").setValue(num);
+
+        Hands secretHand = DB.getSecret_sync(gameID);
+        if (secretHand.getBowl() != -1) {
+            // update all the game stats
+            updateGameStats(secretHand.getBat(), secretHand.getBowl(), gameID);
+        } else {
+            // Add game id to queue for thread to update stats after bowler has updated secret
+            HandCricketServlet.gameIDs.add(gameID);
+        }
+    }
+
+    private void updateGameStats(int bat, int bowl, String gameID) throws NotFoundException, InternalServerErrorException {
+
+        //update game stats
+        Stats stats = DB.getStats_sync(gameID);
+        Teams teams = DB.getTeams_sync(gameID);
+        boolean redTeamBatting = DB.isRedTeamBatting_sync(gameID);
+
+        // Make pointers to team lists withing team and make changes to it
+        ArrayList<String> battingTeam;
+        ArrayList<String> bowlingTeam;
+        if (redTeamBatting) {
+            battingTeam = teams.getRed();
+            bowlingTeam = teams.getBlue();
+        } else {
+            battingTeam = teams.getBlue();
+            bowlingTeam = teams.getRed();
+        }
+
+        // 1. If bat == bowl, OUT
+        if (bat == bowl) {
+
+            // Runs +0, wickets +1, balls +1
+            stats.setWickets(stats.getWickets() + 1);
+            stats.setBalls(stats.getBalls() + 1);
+
+            // Check if this was the last batter of the team
+            if (stats.getWickets() == battingTeam.size()) {
+
+                // Set score as target and refresh all other stats
+                stats.setTarget(stats.getScore());
+                stats.setScore(0);
+                stats.setWickets(0);
+                stats.setBalls(0);
+
+                // Swap batting and bowling team
+                redTeamBatting = !redTeamBatting;
+            }
+
+            // Move current batter to end of the list
+            String currBatterUID = battingTeam.get(0);
+            battingTeam.remove(0);
+            battingTeam.add(currBatterUID);
+
+            // Update current Bowler stats to Firebase
+            String currBowlerUID = bowlingTeam.get(0);
+            PlayerStats currBowlerStats = DB.getPlayerStats_sync(gameID, currBowlerUID);
+            currBowlerStats.setWickets(currBowlerStats.getWickets() + 1);
+            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBowlerUID).setValue(currBowlerStats);
+
+        } else {
+            // NOT OUT!
+
+            // Runs +bat, wickets +0, balls +1
+            stats.setScore(stats.getScore() + bat);
+            stats.setBalls(stats.getBalls() + 1);
+
+            // Update current Batter stats to Firebase
+            String currBatterUID = battingTeam.get(0);
+            PlayerStats currBatterStats = DB.getPlayerStats_sync(gameID, currBatterUID);
+            currBatterStats.setRuns(currBatterStats.getRuns() + 1);
+            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBatterUID).setValue(currBatterStats);
+
+        }
+
+        //Check if BOWLER OVER is done
+        if (stats.getBalls() % 6 == 0) {
+            // Move current bowler to end of the list
+            String currBowlerUID = bowlingTeam.get(0);
+            bowlingTeam.remove(0);
+            bowlingTeam.add(currBowlerUID);
+        }
+
+
+        // Update overall stats, team lists, current batting team to Firebase
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats").setValue(stats);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redTeamBatting").setValue(redTeamBatting);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams").setValue(teams);
+
+        // Reset secret to -1
+        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).setValue(new Hands());
+
+        // Update hands with batter and bowler under games
+        Hands hands = new Hands(bat, bowl);
+        HandCricketServlet.firebase.child(DB.GAMES).child("hands").setValue(hands);
     }
 }

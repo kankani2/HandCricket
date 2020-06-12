@@ -19,7 +19,6 @@ import java.util.concurrent.LinkedBlockingQueue;
  */
 public class HandCricketServlet extends EndpointsServlet {
     static DatabaseReference firebase;
-    static BlockingQueue<String> gameIDs;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -34,7 +33,5 @@ public class HandCricketServlet extends EndpointsServlet {
                 .build();
         FirebaseApp.initializeApp(options);
         firebase = FirebaseDatabase.getInstance().getReference();
-
-        gameIDs = new LinkedBlockingQueue<String>();
     }
 }

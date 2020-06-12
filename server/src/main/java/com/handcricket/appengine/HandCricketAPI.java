@@ -203,21 +203,26 @@ public class HandCricketAPI {
     )
     public void bat(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
         DB.gameMustExist_sync(gameID);
+        // Update secret node
+        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).child("bat").setValue(num);
+    }
+
+    @ApiMethod(
+            name = "updateGame",
+            httpMethod = ApiMethod.HttpMethod.POST,
+            path = "game/{gameID}/updateGame}"
+    )
+    public void updateGame(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        DB.gameMustExist_sync(gameID);
 
         // Set hands value to -1
         HandCricketServlet.firebase.child(DB.GAMES).child("hands").setValue(new Hands());
 
-        // Update secret node
-        HandCricketServlet.firebase.child(DB.SECRET).child(gameID).child("bat").setValue(num);
-
         Hands secretHand = DB.getSecret_sync(gameID);
-        if (secretHand.getBowl() != -1) {
-            // update all the game stats
-            updateGameStats(gameID, secretHand.getBat(), secretHand.getBowl());
-        } else {
-            // Add game id to queue for thread to update stats after bowler has updated secret
-            HandCricketServlet.gameIDs.add(gameID);
-        }
+        if(secretHand.getBat() == -1 || secretHand.getBowl() == -1) return;
+
+        // update all the game stats
+        updateGameStats(gameID, secretHand.getBat(), secretHand.getBowl());
     }
 
     private static String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {

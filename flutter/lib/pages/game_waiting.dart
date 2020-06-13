@@ -1,6 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:handcricket/pages/main_game.dart';
+import 'package:handcricket/pages/main/game.dart';
 import 'package:handcricket/widgets/player_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/models/game_info.dart';

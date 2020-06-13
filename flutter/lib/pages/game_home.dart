@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/pages/create_game.dart';
-import 'package:handcricket/utils/firebase_auth.dart';
 
 import '../constants.dart';
 

@@ -1,15 +1,12 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 
 import '../constants.dart';
 
 class PlayerTeamSelectWidget extends StatefulWidget {
-  final User player;
   final _PlayerTeamSelectWidgetState _mState;
 
-  PlayerTeamSelectWidget({Key key, @required this.player, @required group})
+  PlayerTeamSelectWidget({Key key, @required player, @required group})
       : _mState = new _PlayerTeamSelectWidgetState(player, group),
         super(key: key);
 

@@ -20,9 +20,9 @@ class _JoinGamePage extends State<JoinGamePage> {
 
   List<Container> getTextFields(bool secondWord) {
     int start = 0;
-    int end = (codeWordLength / 2).floor();
+    int end = codeWordLength ~/ 2;
     if (secondWord) {
-      start = (codeWordLength / 2).floor();
+      start = codeWordLength ~/ 2;
       end = codeWordLength;
     }
     List<Container> containerList = new List<Container>();
@@ -126,7 +126,7 @@ class _JoinGamePage extends State<JoinGamePage> {
   void handleEnteredCode() async {
     var code = new StringBuffer();
     for (int i = 0; i < codeWordLength; i++) {
-      if (i == codeWordLength / 2) {
+      if (i == codeWordLength ~/ 2) {
         code.write(" ");
       }
       code.write(textControllers[i].text);

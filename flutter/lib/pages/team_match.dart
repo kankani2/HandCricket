@@ -7,7 +7,7 @@ import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/widgets/player_team_select.dart';
 import 'package:http/http.dart';
 
-import 'main_game.dart';
+import 'main/game.dart';
 
 class TeamMatchPage extends StatefulWidget {
   @override

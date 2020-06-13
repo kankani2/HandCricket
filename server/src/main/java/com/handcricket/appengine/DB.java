@@ -8,7 +8,6 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
 import com.handcricket.appengine.datamodel.*;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import java.util.concurrent.CountDownLatch;
 

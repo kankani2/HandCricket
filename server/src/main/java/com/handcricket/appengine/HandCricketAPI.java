@@ -156,8 +156,9 @@ public class HandCricketAPI {
         // Assign a team to batting randomly
         setTeamStatus(new Random().nextBoolean(), gameID);
 
-        // Set hands value to -1
+        // Set hands and secrets value to -1
         HandCricketServlet.firebase.child(DB.GAMES).child("hands").setValue(new Hands());
+        HandCricketServlet.firebase.child(DB.GAMES).child("secret").setValue(new Hands());
 
         // Initialize game stats
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats").setValue(new Stats());
@@ -187,9 +188,7 @@ public class HandCricketAPI {
     public void bowl(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
         DB.gameMustExist_sync(gameID);
         // Update hand node
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("hands").child("bowl").setValue(num);
-        // Set bowler status to ready
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("ready").child("bowl").setValue(true);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").child("bowl").setValue(num);
     }
 
     @ApiMethod(
@@ -199,10 +198,12 @@ public class HandCricketAPI {
     )
     public void bat(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
         DB.gameMustExist_sync(gameID);
+
+        // Set hands to -1,-1
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("hands").setValue(new Hands());
+
         // Update hand node
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("hands").child("bat").setValue(num);
-        // Set batter status to ready
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("ready").child("bat").setValue(true);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").child("bat").setValue(num);
     }
 
     @ApiMethod(
@@ -217,14 +218,20 @@ public class HandCricketAPI {
         DataSnapshot gameSnapshot = DB.getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES));
         DB.mustExist(gameSnapshot);
 
-        Hands hand = gameSnapshot.child(gameID).child("hands").getValue(new GenericTypeIndicator<Hands>() {
-        });
+        // Get secret
+        Hands secret = DB.getSecret_sync(gameID);
 
-        if(hand.getBat() == -1 || hand.getBowl() == -1)
+        // Set secret to -1,-1
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").setValue(new Hands());
+
+        if (secret.getBat() == -1 || secret.getBowl() == -1)
             throw new InternalServerErrorException("Bowler or batter hand not set before calling update. ");
 
+        // Set hands to correct values
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("hands").setValue(new Hands(secret.getBat(), secret.getBowl()));
+
         // update all the game stats
-        updateGameStats(gameSnapshot, gameID, hand.getBat(), hand.getBowl());
+        updateGameStats(gameSnapshot, gameID, secret.getBat(), secret.getBowl());
     }
 
     private String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
@@ -350,7 +357,5 @@ public class HandCricketAPI {
         if (message != null) {
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue(message);
         }
-
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("ready").setValue(new Ready());
     }
 }

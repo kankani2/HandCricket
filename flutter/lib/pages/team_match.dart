@@ -52,12 +52,11 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
 
   onTeamMatchDone() async {
     Map<String, dynamic> body = new Map();
-    body["teams"] = new Map();
     teamMapping.forEach((index, team) {
-      body["teams"][team.name] = new List<String>();
+      body[team.name] = new List<String>();
     });
     playerContainers.forEach((container) {
-      body["teams"][container.getTeamName()].add(container.getUID());
+      body[container.getTeamName()].add(container.getUID());
     });
 
     Response response = await request(

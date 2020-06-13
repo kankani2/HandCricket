@@ -139,8 +139,8 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child(teamName).setValue(team);
     }
 
-    private void setTeamStatus(Boolean bool, String gameID) {
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redBatting").setValue(bool);
+    private void setTeamStatus(boolean redBatting, String gameID) {
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redBatting").setValue(redBatting);
     }
 
     @ApiMethod(
@@ -215,11 +215,12 @@ public class HandCricketAPI {
         DB.gameMustExist_sync(gameID);
 
         // Get game snapshot
-        DataSnapshot gameSnapshot = DB.getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES));
+        DataSnapshot gameSnapshot = DB.getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID));
         DB.mustExist(gameSnapshot);
 
         // Get secret
-        Hands secret = DB.getSecret_sync(gameID);
+        Hands secret = gameSnapshot.child("secret").getValue(new GenericTypeIndicator<Hands>() {
+        });
 
         // Set secret to -1,-1
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").setValue(new Hands());

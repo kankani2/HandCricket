@@ -38,14 +38,6 @@ public class DB {
         });
     }
 
-    static Hands getSecret_sync(String gameID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret"));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<Hands>() {
-        });
-    }
-
     static PlayerStats getPlayerStats_sync(DataSnapshot gameSnapshot, String gameID, String UID) {
         return gameSnapshot.child(gameID).child("players").child(UID).getValue(new GenericTypeIndicator<PlayerStats>() {
         });

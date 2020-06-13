@@ -250,11 +250,11 @@ public class HandCricketAPI {
         String message = null;
 
         // update game stats
-        Stats stats = gameSnapshot.child(gameID).child("stats").getValue(new GenericTypeIndicator<Stats>() {
+        Stats stats = gameSnapshot.child("stats").getValue(new GenericTypeIndicator<Stats>() {
         });
-        Teams teams = gameSnapshot.child(gameID).child("teams").getValue(new GenericTypeIndicator<Teams>() {
+        Teams teams = gameSnapshot.child("teams").getValue(new GenericTypeIndicator<Teams>() {
         });
-        boolean redTeamBatting = gameSnapshot.child(gameID).child("redTeamBatting").getValue(new GenericTypeIndicator<Boolean>() {
+        boolean redTeamBatting = gameSnapshot.child("redTeamBatting").getValue(new GenericTypeIndicator<Boolean>() {
         });
 
         // Make pointers to team lists within team and make changes to it

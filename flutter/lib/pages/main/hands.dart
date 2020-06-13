@@ -15,17 +15,20 @@ class _HandsWidgetState extends State<HandsWidget> {
   int _blueHand = 0;
 
   reset() {
-    setState(() {
-      _redHand = 0;
-      _blueHand = 0;
-    });
+    setHands(0, 0);
   }
 
   setHands(int redHand, int blueHand) {
-    setState(() {
-      _redHand = redHand;
-      _blueHand = blueHand;
-    });
+    if (_redHand != redHand) {
+      setState(() {
+        _redHand = redHand;
+      });
+    }
+    if (_blueHand != blueHand) {
+      setState(() {
+        _blueHand = blueHand;
+      });
+    }
   }
 
   @override

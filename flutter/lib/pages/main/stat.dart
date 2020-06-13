@@ -15,10 +15,17 @@ class _StatWidgetState extends State<StatWidget> {
   String _right = "";
 
   setStat(String left, String right) {
-    setState(() {
-      _left = left;
-      _right = right;
-    });
+    if (_left != left) {
+      setState(() {
+        _left = left;
+      });
+    }
+
+    if (_right != right) {
+      setState(() {
+        _right = right;
+      });
+    }
   }
 
   @override

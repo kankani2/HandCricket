@@ -14,6 +14,10 @@ class _TitleBarWidgetState extends State<TitleBarWidget> {
   bool _redBatting = false;
 
   void setStatus(bool redBatting) {
+    if (redBatting == _redBatting) {
+      return;
+    }
+
     setState(() {
       this._redBatting = redBatting;
     });

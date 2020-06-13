@@ -232,7 +232,7 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("hands").setValue(new Hands(secret.getBat(), secret.getBowl()));
 
         // update all the game stats
-        updateGameStats(gameSnapshot, gameID, secret.getBat(), secret.getBowl());
+        updateGameStats(gameSnapshot, HandCricketServlet.firebase.child(DB.GAMES).child(gameID), secret.getBat(), secret.getBowl());
     }
 
     private String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
@@ -251,7 +251,7 @@ public class HandCricketAPI {
         });
     }
 
-    private void updateGameStats(DataSnapshot gameSnapshot, String gameID, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
+    private void updateGameStats(DataSnapshot gameSnapshot, DatabaseReference gameRef, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
         String message = null;
 
         // update game stats
@@ -322,7 +322,7 @@ public class HandCricketAPI {
             String currBowlerUID = bowlingTeam.get(0);
             PlayerStats currBowlerStats = getPlayerStats(gameSnapshot, currBowlerUID);
             currBowlerStats.setWickets(currBowlerStats.getWickets() + 1);
-            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBowlerUID).setValue(currBowlerStats);
+            gameRef.child("players").child(currBowlerUID).setValue(currBowlerStats);
 
         } else {
             // NOT OUT!
@@ -335,7 +335,7 @@ public class HandCricketAPI {
             String currBatterUID = battingTeam.get(0);
             PlayerStats currBatterStats = getPlayerStats(gameSnapshot, currBatterUID);
             currBatterStats.setRuns(currBatterStats.getRuns() + 1);
-            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBatterUID).setValue(currBatterStats);
+            gameRef.child("players").child(currBatterUID).setValue(currBatterStats);
 
             // Check if target has been accomplished
             int target = stats.getTarget();
@@ -353,13 +353,13 @@ public class HandCricketAPI {
         }
 
         // Update overall stats, team lists, current batting team to Firebase
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats").setValue(stats);
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redTeamBatting").setValue(redTeamBatting);
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams").setValue(teams);
+        gameRef.child("stats").setValue(stats);
+        gameRef.child("redTeamBatting").setValue(redTeamBatting);
+        gameRef.child("teams").setValue(teams);
 
         // Update game message if not empty
         if (message != null) {
-            HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue(message);
+            gameRef.child("message").setValue(message);
         }
     }
 }

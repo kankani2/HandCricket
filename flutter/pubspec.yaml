@@ -37,5 +37,6 @@ flutter:
     - asset: fonts/BalsamiqSans-BoldItalic.ttf
 
   assets:
-  - images/
+    - images/icons/
+    - images/hands/
 

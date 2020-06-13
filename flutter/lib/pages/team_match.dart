@@ -7,7 +7,7 @@ import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/widgets/player_team_select.dart';
 import 'package:http/http.dart';
 
-import 'main_game.dart';
+import 'main/game.dart';
 
 class TeamMatchPage extends StatefulWidget {
   @override
@@ -52,11 +52,12 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
 
   onTeamMatchDone() async {
     Map<String, dynamic> body = new Map();
+    body["teams"] = new Map();
     teamMapping.forEach((index, team) {
-      body[team.name] = new List<String>();
+      body["teams"][team.name] = new List<String>();
     });
     playerContainers.forEach((container) {
-      body[container.getTeamName()].add(container.getUID());
+      body["teams"][container.getTeamName()].add(container.getUID());
     });
 
     Response response = await request(

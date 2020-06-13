@@ -246,6 +246,11 @@ public class HandCricketAPI {
         }
     }
 
+    private PlayerStats getPlayerStats(DataSnapshot gameSnapshot, String gameID, String UID) {
+        return gameSnapshot.child(gameID).child("players").child(UID).getValue(new GenericTypeIndicator<PlayerStats>() {
+        });
+    }
+
     private void updateGameStats(DataSnapshot gameSnapshot, String gameID, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
         String message = null;
 
@@ -310,13 +315,12 @@ public class HandCricketAPI {
             }
 
             // Move current batter to end of the list
-            String currBatterUID = battingTeam.get(0);
-            battingTeam.remove(0);
+            String currBatterUID = battingTeam.remove(0);
             battingTeam.add(currBatterUID);
 
             // Update current Bowler stats to Firebase
             String currBowlerUID = bowlingTeam.get(0);
-            PlayerStats currBowlerStats = DB.getPlayerStats_sync(gameSnapshot, gameID, currBowlerUID);
+            PlayerStats currBowlerStats = getPlayerStats(gameSnapshot, gameID, currBowlerUID);
             currBowlerStats.setWickets(currBowlerStats.getWickets() + 1);
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBowlerUID).setValue(currBowlerStats);
 
@@ -329,7 +333,7 @@ public class HandCricketAPI {
 
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);
-            PlayerStats currBatterStats = DB.getPlayerStats_sync(gameSnapshot, gameID, currBatterUID);
+            PlayerStats currBatterStats = getPlayerStats(gameSnapshot, gameID, currBatterUID);
             currBatterStats.setRuns(currBatterStats.getRuns() + 1);
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBatterUID).setValue(currBatterStats);
 
@@ -344,8 +348,7 @@ public class HandCricketAPI {
         //Check if BOWLER OVER is done
         if (stats.getBalls() % 6 == 0) {
             // Move current bowler to end of the list
-            String currBowlerUID = bowlingTeam.get(0);
-            bowlingTeam.remove(0);
+            String currBowlerUID = bowlingTeam.remove(0);
             bowlingTeam.add(currBowlerUID);
         }
 

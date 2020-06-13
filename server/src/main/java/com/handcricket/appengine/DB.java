@@ -7,8 +7,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.database.DatabaseError;
-import com.handcricket.appengine.datamodel.Game;
-import com.handcricket.appengine.datamodel.User;
+import com.handcricket.appengine.datamodel.*;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -21,7 +20,8 @@ public class DB {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("code"));
         mustExist(snapshot);
 
-        return snapshot.getValue(new GenericTypeIndicator<String>() {});
+        return snapshot.getValue(new GenericTypeIndicator<String>() {
+        });
     }
 
     static void gameMustExist_sync(String gameID) throws InternalServerErrorException, NotFoundException {
@@ -33,14 +33,16 @@ public class DB {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.USERS).child(uid));
         mustExist(snapshot);
 
-        return snapshot.getValue(new GenericTypeIndicator<User>() {});
+        return snapshot.getValue(new GenericTypeIndicator<User>() {
+        });
     }
 
     static String getGameIdFrom(String gameCode) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.CODES).child(gameCode));
         mustExist(snapshot);
 
-        return snapshot.getValue(new GenericTypeIndicator<String>() {});
+        return snapshot.getValue(new GenericTypeIndicator<String>() {
+        });
     }
 
     static void userMustExist_sync(String uid) throws InternalServerErrorException, NotFoundException {
@@ -48,7 +50,7 @@ public class DB {
         mustExist(snapshot);
     }
 
-    private static void mustExist(DataSnapshot snapshot) throws NotFoundException {
+    static void mustExist(DataSnapshot snapshot) throws NotFoundException {
         if (!snapshot.exists()) {
             throw new NotFoundException(String.format("Resource with ID %s not found.", snapshot.getKey()));
         }
@@ -65,7 +67,8 @@ public class DB {
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+            }
         });
 
         try {

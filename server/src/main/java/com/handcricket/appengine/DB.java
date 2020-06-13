@@ -16,7 +16,6 @@ public class DB {
     public static final String USERS = "users";
     public static final String GAMES = "games";
     public static final String CODES = "codes";
-    public static final String SECRET = "secret";
 
     static String getGameCode_sync(String gameID) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("code"));
@@ -36,14 +35,6 @@ public class DB {
         mustExist(snapshot);
 
         return snapshot.getValue(new GenericTypeIndicator<User>() {
-        });
-    }
-
-    static Hands getSecret_sync(String gameID) throws InternalServerErrorException, NotFoundException {
-        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.SECRET).child(gameID));
-        mustExist(snapshot);
-
-        return snapshot.getValue(new GenericTypeIndicator<Hands>() {
         });
     }
 

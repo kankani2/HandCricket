@@ -5,8 +5,6 @@ public class PlayerStats {
     private int wickets;
 
     public PlayerStats() {
-        runs = 0;
-        wickets = 0;
     }
 
     public PlayerStats(int runs, int wickets) {

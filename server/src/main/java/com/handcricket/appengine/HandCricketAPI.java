@@ -246,8 +246,8 @@ public class HandCricketAPI {
         }
     }
 
-    private PlayerStats getPlayerStats(DataSnapshot gameSnapshot, String gameID, String UID) {
-        return gameSnapshot.child(gameID).child("players").child(UID).getValue(new GenericTypeIndicator<PlayerStats>() {
+    private PlayerStats getPlayerStats(DataSnapshot gameSnapshot, String UID) {
+        return gameSnapshot.child("players").child(UID).getValue(new GenericTypeIndicator<PlayerStats>() {
         });
     }
 
@@ -320,7 +320,7 @@ public class HandCricketAPI {
 
             // Update current Bowler stats to Firebase
             String currBowlerUID = bowlingTeam.get(0);
-            PlayerStats currBowlerStats = getPlayerStats(gameSnapshot, gameID, currBowlerUID);
+            PlayerStats currBowlerStats = getPlayerStats(gameSnapshot, currBowlerUID);
             currBowlerStats.setWickets(currBowlerStats.getWickets() + 1);
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBowlerUID).setValue(currBowlerStats);
 
@@ -333,7 +333,7 @@ public class HandCricketAPI {
 
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);
-            PlayerStats currBatterStats = getPlayerStats(gameSnapshot, gameID, currBatterUID);
+            PlayerStats currBatterStats = getPlayerStats(gameSnapshot, currBatterUID);
             currBatterStats.setRuns(currBatterStats.getRuns() + 1);
             HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(currBatterUID).setValue(currBatterStats);
 

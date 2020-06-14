@@ -1,17 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:handcricket/models/user.dart';
 import 'package:handcricket/models/user_stat.dart';
-import 'package:handcricket/utils/cache.dart';
 
 import '../../constants.dart';
 
 class TeamPlayerListWidget extends StatefulWidget {
-  final _TeamPlayerListWidgetState mState;
-
-  TeamPlayerListWidget({Key key, @required Cache<User> userCache})
-      : mState = new _TeamPlayerListWidgetState(userCache),
-        super(key: key);
+  final _TeamPlayerListWidgetState mState = new _TeamPlayerListWidgetState();
 
   @override
   State<StatefulWidget> createState() => mState;
@@ -20,9 +14,6 @@ class TeamPlayerListWidget extends StatefulWidget {
 class _TeamPlayerListWidgetState extends State<TeamPlayerListWidget> {
   List<UserStat> _red = new List();
   List<UserStat> _blue = new List();
-  Cache<User> _userCache;
-
-  _TeamPlayerListWidgetState(this._userCache);
 
   @override
   Widget build(BuildContext context) {

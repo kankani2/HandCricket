@@ -28,12 +28,12 @@ class _MainGamePageState extends State<MainGamePage> {
   HandsWidget hands = HandsWidget();
   StatWidget topStats = StatWidget();
   StatWidget bottomStats = StatWidget();
-  TeamPlayerListWidget teamPlayersList;
+  TeamPlayerListWidget teamPlayersList = TeamPlayerListWidget();
+  DiceWidget dice = DiceWidget();
 
   Cache<User> _userCache;
 
-  _MainGamePageState(this._userCache)
-      : teamPlayersList = TeamPlayerListWidget(userCache: _userCache);
+  _MainGamePageState(this._userCache);;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class _MainGamePageState extends State<MainGamePage> {
               topStats,
               bottomStats,
               teamPlayersList,
-              DiceWidget(),
+              dice,
               FlatButton(
                 color: Colors.blue[900],
                 onPressed: _onPress,

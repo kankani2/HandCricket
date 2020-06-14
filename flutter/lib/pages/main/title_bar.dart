@@ -48,7 +48,7 @@ class _TitleBarWidgetState extends State<TitleBarWidget> {
           textAlign: TextAlign.center,
           style: TextStyle(
               color: team.color,
-              fontSize: 30,
+              fontSize: 30  ,
               fontFamily: primaryfont),
         ),
       );

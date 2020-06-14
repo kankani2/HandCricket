@@ -6,7 +6,7 @@ import '../constants.dart';
 class PlayerTeamSelectWidget extends StatefulWidget {
   final _PlayerTeamSelectWidgetState _mState;
 
-  PlayerTeamSelectWidget({Key key, @required player, @required group})
+  PlayerTeamSelectWidget({Key key, @required User player, @required int group})
       : _mState = new _PlayerTeamSelectWidgetState(player, group),
         super(key: key);
 

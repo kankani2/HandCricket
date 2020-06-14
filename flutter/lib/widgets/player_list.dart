@@ -2,22 +2,28 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
+import 'package:handcricket/utils/cache.dart';
 
 class PlayerListWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final Cache<User> userCache;
 
-  PlayerListWidget({Key key, @required this.scaffoldKey}) : super(key: key);
+  PlayerListWidget(
+      {Key key, @required this.scaffoldKey, @required this.userCache})
+      : super(key: key);
 
   @override
-  _PlayerListWidgetState createState() => _PlayerListWidgetState(scaffoldKey);
+  _PlayerListWidgetState createState() =>
+      _PlayerListWidgetState(scaffoldKey, userCache);
 }
 
 class _PlayerListWidgetState extends State<PlayerListWidget> {
-  List<User> players = new List<User>();
-  GlobalKey<ScaffoldState> scaffoldKey;
+  List<User> _players = new List<User>();
+  GlobalKey<ScaffoldState> _scaffoldKey;
+  Cache<User> _userCache;
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
 
-  _PlayerListWidgetState(this.scaffoldKey);
+  _PlayerListWidgetState(this._scaffoldKey, this._userCache);
 
   @override
   void initState() {
@@ -33,12 +39,15 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
         .child("players")
         .onChildAdded
         .listen((event) async {
-      User playerInfo = await User.getUser(event.snapshot.key, scaffoldKey);
-      if (playerInfo != null) {
-        setState(() {
-          players.add(playerInfo);
-        });
+      User player = await _userCache.get(event.snapshot.key);
+      if (player == null) {
+        User.userNotFoundError(_scaffoldKey, event.snapshot.key);
+        return;
       }
+
+      setState(() {
+        _players.add(player);
+      });
     });
   }
 
@@ -46,7 +55,7 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        children: getPlayerNameWidgets(players),
+        children: getPlayerNameWidgets(_players),
       ),
     );
   }

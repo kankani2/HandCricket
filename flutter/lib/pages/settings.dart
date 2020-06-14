@@ -4,6 +4,7 @@ import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:handcricket/utils/error.dart';
 
 class SettingsPage extends StatefulWidget {
   final User currUser;
@@ -56,9 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
     var response = await request(HttpMethod.PUT, "/user/${currUser.uid}",
         body: {"name": currUser.name, "icon": currUser.icon});
     if (!isSuccess(response)) {
-      final snackBar =
-          SnackBar(content: Text('Database could not be updated.'));
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      errorMessage(_scaffoldKey, 'Database could not be updated.');
       return;
     }
 

@@ -4,22 +4,31 @@ import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:handcricket/utils/cache.dart';
+import 'package:handcricket/utils/error.dart';
 import 'package:handcricket/widgets/player_team_select.dart';
 import 'package:http/http.dart';
 
 import 'main/game.dart';
 
 class TeamMatchPage extends StatefulWidget {
+  final Cache<User> userCache;
+
+  const TeamMatchPage({Key key, @required this.userCache}) : super(key: key);
+
   @override
-  _TeamMatchPageState createState() => _TeamMatchPageState();
+  _TeamMatchPageState createState() => _TeamMatchPageState(userCache);
 }
 
 class _TeamMatchPageState extends State<TeamMatchPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
-  List<PlayerTeamSelectWidget> playerContainers =
+  List<PlayerTeamSelectWidget> _playerContainers =
       new List<PlayerTeamSelectWidget>();
-  GameInfo game;
+  Cache<User> _userCache;
+  GameInfo _game;
+
+  _TeamMatchPageState(this._userCache);
 
   @override
   void initState() {
@@ -28,21 +37,26 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
   }
 
   void addListenerForGameToUpdatePlayers() async {
-    game = await GameInfo.getGameInfoFromDisk();
+    _game = await GameInfo.getGameInfoFromDisk();
     DataSnapshot snapshot =
-        await _gamesRef.child(game.gameID).child("players").once();
+        await _gamesRef.child(_game.gameID).child("players").once();
     Map<String, dynamic> playerUIDs =
         new Map<String, dynamic>.from(snapshot.value);
 
     List<User> players = new List();
     for (String uid in playerUIDs.keys) {
-      players.add(await User.getUser(uid, _scaffoldKey));
+      var player = await _userCache.get(uid);
+      if (player == null) {
+        User.userNotFoundError(_scaffoldKey, uid);
+        continue;
+      }
+      players.add(player);
     }
 
     setState(() {
-      playerContainers = new List<PlayerTeamSelectWidget>();
+      _playerContainers = new List<PlayerTeamSelectWidget>();
       for (int i = 0; i < players.length; i++) {
-        playerContainers.add(PlayerTeamSelectWidget(
+        _playerContainers.add(PlayerTeamSelectWidget(
           player: players[i],
           group: i % teamMapping.length,
         ));
@@ -55,21 +69,24 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
     teamMapping.forEach((index, team) {
       body[team.name] = new List<String>();
     });
-    playerContainers.forEach((container) {
+    _playerContainers.forEach((container) {
       body[container.getTeamName()].add(container.getUID());
     });
 
     Response response = await request(
-        HttpMethod.POST, "/game/${game.gameID}/start",
+        HttpMethod.POST, "/game/${_game.gameID}/start",
         body: body);
     if (!isSuccess(response)) {
-      final snackBar = SnackBar(content: Text('Could not start game.'));
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      errorMessage(_scaffoldKey, 'Could not start game.');
       return;
     }
 
     Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MainGamePage()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => MainGamePage(
+                  userCache: _userCache,
+                )));
   }
 
   @override
@@ -103,7 +120,7 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
               ),
               Expanded(
                 child: ListView(
-                  children: playerContainers,
+                  children: _playerContainers,
                 ),
               ),
               FlatButton(

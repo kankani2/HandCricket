@@ -7,6 +7,7 @@ import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/pages/game_waiting.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:handcricket/utils/error.dart';
 
 class JoinGamePage extends StatefulWidget {
   @override
@@ -135,8 +136,7 @@ class _JoinGamePage extends State<JoinGamePage> {
     var response = await request(HttpMethod.POST, "/game/player/${user.uid}",
         body: {"gameCode": code.toString()});
     if (!isSuccess(response)) {
-      final snackBar = SnackBar(content: Text('Game could not be joined.'));
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      errorMessage(_scaffoldKey, 'Game could not be joined.');
       return;
     }
     Map respBody = json.decode(response.body);

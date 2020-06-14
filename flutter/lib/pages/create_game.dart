@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/models/game_info.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:handcricket/pages/team_match.dart';
+import 'package:handcricket/utils/cache.dart';
+import 'package:handcricket/utils/error.dart';
 import 'package:handcricket/widgets/player_list.dart';
 import 'package:handcricket/utils/backend.dart';
 
@@ -13,13 +16,14 @@ class CreateGamePage extends StatefulWidget {
 
 class _CreateGamePage extends State<CreateGamePage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  String code = "";
+  var _userCache = new Cache<User>(User.getUser);
+  String _code = "";
 
   void initState() {
     super.initState();
     GameInfo.getGameInfoFromDisk().then((game) async {
       setState(() {
-        code = game.gameCode;
+        _code = game.gameCode;
       });
     });
   }
@@ -86,7 +90,7 @@ class _CreateGamePage extends State<CreateGamePage> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: getGameCodeWidgets(code),
+                children: getGameCodeWidgets(_code),
               ),
               SizedBox(
                 height: 10,
@@ -107,6 +111,7 @@ class _CreateGamePage extends State<CreateGamePage> {
               ),
               PlayerListWidget(
                 scaffoldKey: _scaffoldKey,
+                userCache: _userCache,
               ),
               FlatButton(
                 color: Colors.blue[700],
@@ -133,14 +138,15 @@ class _CreateGamePage extends State<CreateGamePage> {
     var response =
         await request(HttpMethod.POST, "/game/${gameInfo.gameID}/match");
     if (!isSuccess(response)) {
-      final snackBar =
-          SnackBar(content: Text('Could not move to team matching stage.'));
-      _scaffoldKey.currentState.showSnackBar(snackBar);
+      errorMessage(_scaffoldKey, 'Could not move to team matching stage.');
       return;
     }
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(builder: (context) => TeamMatchPage()),
+      MaterialPageRoute(
+          builder: (context) => TeamMatchPage(
+                userCache: _userCache,
+              )),
     );
   }
 }

@@ -3,16 +3,22 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_stat.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:handcricket/pages/main/dice.dart';
 import 'package:handcricket/pages/main/hands.dart';
 import 'package:handcricket/pages/main/stat.dart';
 import 'package:handcricket/pages/main/title_bar.dart';
+import 'package:handcricket/utils/cache.dart';
 
 import '../../constants.dart';
 
 class MainGamePage extends StatefulWidget {
+  final Cache<User> userCache;
+
+  const MainGamePage({Key key, @required this.userCache}) : super(key: key);
+
   @override
-  _MainGamePageState createState() => _MainGamePageState();
+  _MainGamePageState createState() => _MainGamePageState(userCache);
 }
 
 class _MainGamePageState extends State<MainGamePage> {
@@ -20,6 +26,10 @@ class _MainGamePageState extends State<MainGamePage> {
   StatWidget topStats = StatWidget();
   StatWidget bottomStats = StatWidget();
   HandsWidget hands = HandsWidget();
+
+  Cache<User> _userCache;
+
+  _MainGamePageState(this._userCache);
 
   @override
   Widget build(BuildContext context) {

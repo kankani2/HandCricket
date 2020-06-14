@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_stat.dart';
 import 'package:handcricket/models/user.dart';
+import 'package:handcricket/models/user_stat.dart';
 import 'package:handcricket/pages/main/dice.dart';
 import 'package:handcricket/pages/main/hands.dart';
 import 'package:handcricket/pages/main/stat.dart';
+import 'package:handcricket/pages/main/team_player_list.dart';
 import 'package:handcricket/pages/main/title_bar.dart';
 import 'package:handcricket/utils/cache.dart';
 
@@ -23,9 +25,11 @@ class MainGamePage extends StatefulWidget {
 
 class _MainGamePageState extends State<MainGamePage> {
   TitleBarWidget titleBar = TitleBarWidget();
+  HandsWidget hands = HandsWidget();
   StatWidget topStats = StatWidget();
   StatWidget bottomStats = StatWidget();
-  HandsWidget hands = HandsWidget();
+  TeamPlayerListWidget teamPlayersList = TeamPlayerListWidget();
+  DiceWidget dice = DiceWidget();
 
   Cache<User> _userCache;
 
@@ -44,7 +48,8 @@ class _MainGamePageState extends State<MainGamePage> {
               hands,
               topStats,
               bottomStats,
-              DiceWidget(),
+              teamPlayersList,
+              dice,
               FlatButton(
                 color: Colors.blue[900],
                 onPressed: _onPress,
@@ -74,5 +79,13 @@ class _MainGamePageState extends State<MainGamePage> {
 
     Random random = new Random();
     hands.mState.setHands(random.nextInt(7), random.nextInt(7));
+
+    teamPlayersList.mState.setPlayerStats(<UserStat>[
+      UserStat(User("", "Ayush", 2), 30, 3),
+      UserStat(User("", "Pooja", 2), 40, 0)
+    ], <UserStat>[
+      UserStat(User("", "lol", 2), 3, 0),
+      UserStat(User("", "test", 2), 0, 0)
+    ]);
   }
 }

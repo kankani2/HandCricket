@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_stat.dart';
 import 'package:handcricket/models/user.dart';
+import 'package:handcricket/pages/main/curr_player.dart';
 import 'package:handcricket/pages/main/dice.dart';
 import 'package:handcricket/pages/main/hands.dart';
 import 'package:handcricket/pages/main/stat.dart';
@@ -26,6 +27,7 @@ class _MainGamePageState extends State<MainGamePage> {
   StatWidget topStats = StatWidget();
   StatWidget bottomStats = StatWidget();
   HandsWidget hands = HandsWidget();
+  CurrPlayerWidget currPlayer = CurrPlayerWidget();
 
   Cache<User> _userCache;
 
@@ -42,6 +44,7 @@ class _MainGamePageState extends State<MainGamePage> {
             children: <Widget>[
               titleBar,
               hands,
+              currPlayer,
               topStats,
               bottomStats,
               DiceWidget(),

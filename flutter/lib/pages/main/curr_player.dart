@@ -15,11 +15,17 @@ class _CurrPlayerWidgetState extends State<CurrPlayerWidget> {
   User _redCurrUser = new User("", "Red Player", 0);
   User _blueCurrUser = new User("", "Blue Player", 0);
 
-  void setStatus(User redCurrUser, User blueCurrUser) {
-    setState(() {
-      this._redCurrUser = redCurrUser;
-      this._blueCurrUser = blueCurrUser;
-    });
+  void setPlayers(User redCurrUser, User blueCurrUser) {
+    if (!_redCurrUser.equals(redCurrUser)) {
+      setState(() {
+        this._redCurrUser = redCurrUser;
+      });
+    }
+    if (!_blueCurrUser.equals(blueCurrUser)) {
+      setState(() {
+        this._blueCurrUser = blueCurrUser;
+      });
+    }
   }
 
   @override
@@ -53,8 +59,8 @@ class _CurrPlayerWidgetState extends State<CurrPlayerWidget> {
 
   List<Widget> _getChildren(User redCurrUser, User blueCurrUser) {
     var widgets = new List<Widget>();
-    widgets.add(_getPlayerAndIcon(redCurrUser, Colors.red));
-    widgets.add(_getPlayerAndIcon(blueCurrUser, Colors.blue[900]));
+    widgets.add(_getPlayerAndIcon(redCurrUser, teamMapping[0].color));
+    widgets.add(_getPlayerAndIcon(blueCurrUser, teamMapping[1].color));
     return widgets;
   }
 }

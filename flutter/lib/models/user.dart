@@ -19,6 +19,12 @@ class User {
     prefs.setInt("icon", icon);
   }
 
+  bool equals(User user) {
+    return (this.uid == user.uid &&
+        this.name == user.name &&
+        this.icon == user.icon);
+  }
+
   static Future<User> getUserFromDisk() async {
     final prefs = await SharedPreferences.getInstance();
     return new User(

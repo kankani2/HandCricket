@@ -33,7 +33,7 @@ class _MainGamePageState extends State<MainGamePage> {
 
   Cache<User> _userCache;
 
-  _MainGamePageState(this._userCache);;
+  _MainGamePageState(this._userCache);
 
   @override
   Widget build(BuildContext context) {

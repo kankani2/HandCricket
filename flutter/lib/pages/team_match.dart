@@ -48,6 +48,7 @@ class _TeamMatchPageState extends State<TeamMatchPage> {
       var player = await _userCache.get(uid);
       if (player == null) {
         User.userNotFoundError(_scaffoldKey, uid);
+        continue;
       }
       players.add(player);
     }

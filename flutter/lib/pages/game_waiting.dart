@@ -1,6 +1,8 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:handcricket/models/user.dart';
 import 'package:handcricket/pages/main/game.dart';
+import 'package:handcricket/utils/cache.dart';
 import 'package:handcricket/widgets/player_list.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/models/game_info.dart';
@@ -15,7 +17,8 @@ class GameWaitingPage extends StatefulWidget {
 class _GameWaitingPageState extends State<GameWaitingPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
-  String message = "";
+  String _message = "";
+  var _userCache = new Cache<User>(User.getUser);
 
   void initState() {
     super.initState();
@@ -29,11 +32,14 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
       if (event.snapshot.value == null) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainGamePage()),
+          MaterialPageRoute(
+              builder: (context) => MainGamePage(
+                    userCache: _userCache,
+                  )),
         );
       } else {
         setState(() {
-          message = event.snapshot.value;
+          _message = event.snapshot.value;
         });
       }
     });
@@ -56,7 +62,7 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
               children: <Widget>[
                 Expanded(
                   child: Text(
-                    message,
+                    _message,
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 45,
@@ -66,7 +72,7 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
                 ),
               ],
             ),
-            PlayerListWidget(scaffoldKey: _scaffoldKey),
+            PlayerListWidget(scaffoldKey: _scaffoldKey, userCache: _userCache),
           ],
         ),
       ),

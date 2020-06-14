@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:handcricket/utils/backend.dart';
+import 'package:handcricket/utils/error.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class User {
@@ -24,16 +25,18 @@ class User {
         prefs.getString("uid"), prefs.getString("name"), prefs.getInt("icon"));
   }
 
-  static Future<User> getUser(
-      String uid, GlobalKey<ScaffoldState> scaffoldKey) async {
+  static Future<User> getUser(String uid) async {
     var response = await request(HttpMethod.GET, "/user/$uid");
     if (!isSuccess(response)) {
-      final snackBar =
-          SnackBar(content: Text('User not found in the database.'));
-      scaffoldKey.currentState.showSnackBar(snackBar);
       return null;
     }
+
     Map respBody = json.decode(response.body);
     return User(uid, respBody["name"], respBody["icon"]);
+  }
+
+  static void userNotFoundError(
+      GlobalKey<ScaffoldState> scaffoldKey, String uid) {
+    errorMessage(scaffoldKey, 'User $uid not found in the database.');
   }
 }

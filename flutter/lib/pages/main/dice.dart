@@ -12,11 +12,11 @@ class _DiceWidgetState extends State<DiceWidget> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      children: getButtons(),
+      children: _getButtons(),
     );
   }
 
-  List<Expanded> getButtons() {
+  List<Expanded> _getButtons() {
     var diceIcons = new List<Expanded>();
     for (int i = 0; i < 6; i++) {
       diceIcons.add(

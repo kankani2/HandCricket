@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_stat.dart';
+import 'package:handcricket/pages/main/dice.dart';
 import 'package:handcricket/pages/main/hands.dart';
 import 'package:handcricket/pages/main/stat.dart';
 import 'package:handcricket/pages/main/title_bar.dart';
@@ -33,6 +34,7 @@ class _MainGamePageState extends State<MainGamePage> {
               hands,
               topStats,
               bottomStats,
+              DiceWidget(),
               FlatButton(
                 color: Colors.blue[900],
                 onPressed: _onPress,

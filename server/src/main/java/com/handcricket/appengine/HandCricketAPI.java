@@ -135,10 +135,6 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
-    private void addPlayersToTeam(String teamName, ArrayList<String> team, String gameID) {
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child(teamName).setValue(team);
-    }
-
     private void setTeamStatus(boolean redBatting, String gameID) {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redBatting").setValue(redBatting);
     }
@@ -150,8 +146,7 @@ public class HandCricketAPI {
     )
     public void startGame(Teams team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         // Store assigned team value for each player
-        addPlayersToTeam("red", team.getRed(), gameID);
-        addPlayersToTeam("blue", team.getBlue(), gameID);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams").setValue(team);
 
         // Assign a team to batting randomly
         setTeamStatus(new Random().nextBoolean(), gameID);

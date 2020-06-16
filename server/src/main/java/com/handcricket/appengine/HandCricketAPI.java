@@ -135,31 +135,29 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
-    private void setTeamStatus(boolean redBatting, String gameID) {
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redBatting").setValue(redBatting);
-    }
-
     @ApiMethod(
             name = "startGame",
             httpMethod = ApiMethod.HttpMethod.POST,
             path = "game/{gameID}/start"
     )
     public void startGame(Teams team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        DatabaseReference gameRef = HandCricketServlet.firebase.child(DB.GAMES).child(gameID);
+
         // Store assigned team value for each player
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams").setValue(team);
+        gameRef.child("teams").setValue(team);
 
         // Assign a team to batting randomly
-        setTeamStatus(new Random().nextBoolean(), gameID);
+        gameRef.child("redBatting").setValue(new Random().nextBoolean());
 
         // Set hands and secrets value to -1
-        HandCricketServlet.firebase.child(DB.GAMES).child("hands").setValue(new Hands());
-        HandCricketServlet.firebase.child(DB.GAMES).child("secret").setValue(new Hands());
+        gameRef.child("hands").setValue(new Hands());
+        gameRef.child("secret").setValue(new Hands());
 
         // Initialize game stats
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("stats").setValue(new Stats());
+        gameRef.child("stats").setValue(new Stats());
 
         // Update game message to null hence deleting the node
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue(null);
+        gameRef.child("message").setValue(null);
     }
 
     @ApiMethod(
@@ -230,11 +228,11 @@ public class HandCricketAPI {
         updateGameStats(gameSnapshot, HandCricketServlet.firebase.child(DB.GAMES).child(gameID), secret.getBat(), secret.getBowl());
     }
 
-    private String getMessageForWinner(boolean redTeamBatting, boolean isCurrTeamWinner) {
+    private String getMessageForWinner(boolean redBatting, boolean isCurrTeamWinner) {
         String redWins = "Red team wins! ";
         String blueWins = "Blue team wins! ";
 
-        if ((redTeamBatting && isCurrTeamWinner) || (!redTeamBatting && !isCurrTeamWinner)) {
+        if ((redBatting && isCurrTeamWinner) || (!redBatting && !isCurrTeamWinner)) {
             return redWins;
         } else {
             return blueWins;
@@ -254,13 +252,13 @@ public class HandCricketAPI {
         });
         Teams teams = gameSnapshot.child("teams").getValue(new GenericTypeIndicator<Teams>() {
         });
-        boolean redTeamBatting = gameSnapshot.child("redTeamBatting").getValue(new GenericTypeIndicator<Boolean>() {
+        boolean redBatting = gameSnapshot.child("redBatting").getValue(new GenericTypeIndicator<Boolean>() {
         });
 
         // Make pointers to team lists within team and make changes to it
         ArrayList<String> battingTeam;
         ArrayList<String> bowlingTeam;
-        if (redTeamBatting) {
+        if (redBatting) {
             battingTeam = teams.getRed();
             bowlingTeam = teams.getBlue();
         } else {
@@ -289,7 +287,7 @@ public class HandCricketAPI {
                     stats.setBalls(0);
 
                     // Swap batting and bowling team
-                    redTeamBatting = !redTeamBatting;
+                    redBatting = !redBatting;
                 } else {
                     // Game is over
 
@@ -298,13 +296,13 @@ public class HandCricketAPI {
                     int runs = stats.getRuns();
                     if (target <= runs) {
                         // Current batting team won
-                        message = getMessageForWinner(redTeamBatting, true);
+                        message = getMessageForWinner(redBatting, true);
                     } else if (target == (runs + 1)) {
                         //Tie
                         message = "IT'S A TIE! ";
                     } else {
                         // Current batting team lost
-                        message = getMessageForWinner(redTeamBatting, false);
+                        message = getMessageForWinner(redBatting, false);
                     }
                 }
             }
@@ -329,14 +327,14 @@ public class HandCricketAPI {
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);
             PlayerStats currBatterStats = getPlayerStats(gameSnapshot, currBatterUID);
-            currBatterStats.setRuns(currBatterStats.getRuns() + 1);
+            currBatterStats.setRuns(currBatterStats.getRuns() + bat);
             gameRef.child("players").child(currBatterUID).setValue(currBatterStats);
 
             // Check if target has been accomplished
             int target = stats.getTarget();
             if (target != -1 && target <= stats.getRuns()) {
                 // Currently batting team won
-                message = getMessageForWinner(redTeamBatting, true);
+                message = getMessageForWinner(redBatting, true);
             }
         }
 
@@ -353,7 +351,7 @@ public class HandCricketAPI {
         }
 
         // Update overall stats, team lists, current batting team to Firebase
-        gameRef.child("redTeamBatting").setValue(redTeamBatting);
+        gameRef.child("redBatting").setValue(redBatting);
         gameRef.child("teams").setValue(teams);
         gameRef.child("stats").setValue(stats);
     }

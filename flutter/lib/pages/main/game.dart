@@ -99,16 +99,17 @@ class _MainGamePageState extends State<MainGamePage> {
     }
 
     Response response = await request(HttpMethod.POST,
-        "/game/${_game.gameID}/${describeEnum(_currUserStatus)}",
+        "/game/${_game.gameID}/${describeEnum(_currUserStatus).toLowerCase()}",
         body: {"num": number});
     if (!isSuccess(response)) {
       dice.mState.enable(); // re-enable
-
+      print(response.statusCode);
+      print(response.body);
       // TODO show snack bar
     }
   }
 
-  showAlertDialog(BuildContext context, String message) {
+  showAlertDialog(BuildContext context, String message) async {
     Widget remindButton = FlatButton(
       child: Text("Back to home page"),
       onPressed: () {
@@ -138,8 +139,9 @@ class _MainGamePageState extends State<MainGamePage> {
         remindButton,
       ],
     );
+
     // show the dialog
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return alert;
@@ -206,7 +208,8 @@ class _MainGamePageState extends State<MainGamePage> {
     bottomStats.mState.setStat(gStats.target(), gStats.toWin());
 
     if (snapshot.value["message"] != null) {
-      showAlertDialog(context, snapshot.value["message"]);
+      await showAlertDialog(context, snapshot.value["message"]);
+      Navigator.pop(context);
     }
 
     //enable buttons if this user is batter or bowler

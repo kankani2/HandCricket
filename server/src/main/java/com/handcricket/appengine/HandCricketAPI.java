@@ -135,10 +135,6 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).removeValue();
     }
 
-    private void addPlayersToTeam(String teamName, ArrayList<String> team, String gameID) {
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child(teamName).setValue(team);
-    }
-
     private void setTeamStatus(boolean redBatting, String gameID) {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("redBatting").setValue(redBatting);
     }
@@ -150,8 +146,7 @@ public class HandCricketAPI {
     )
     public void startGame(Teams team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         // Store assigned team value for each player
-        addPlayersToTeam("red", team.getRed(), gameID);
-        addPlayersToTeam("blue", team.getBlue(), gameID);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("teams").setValue(team);
 
         // Assign a team to batting randomly
         setTeamStatus(new Random().nextBoolean(), gameID);
@@ -183,27 +178,27 @@ public class HandCricketAPI {
     @ApiMethod(
             name = "bowl",
             httpMethod = ApiMethod.HttpMethod.POST,
-            path = "game/{gameID}/bowl/{num}"
+            path = "game/{gameID}/bowl"
     )
-    public void bowl(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
+    public void bowl(Move move, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         DB.gameMustExist_sync(gameID);
         // Update hand node
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").child("bowl").setValue(num);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").child("bowl").setValue(move.getNum());
     }
 
     @ApiMethod(
             name = "bat",
             httpMethod = ApiMethod.HttpMethod.POST,
-            path = "game/{gameID}/bat/{num}"
+            path = "game/{gameID}/bat"
     )
-    public void bat(@Named("gameID") String gameID, @Named("num") int num) throws NotFoundException, InternalServerErrorException {
+    public void bat(Move move, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         DB.gameMustExist_sync(gameID);
 
         // Set hands to -1,-1
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("hands").setValue(new Hands());
 
         // Update hand node
-        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").child("bat").setValue(num);
+        HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("secret").child("bat").setValue(move.getNum());
     }
 
     @ApiMethod(

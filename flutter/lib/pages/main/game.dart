@@ -1,13 +1,11 @@
-import 'dart:io';
-
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/game_stat.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/models/user_stat.dart';
-import 'package:handcricket/pages/game_home.dart';
 import 'package:handcricket/pages/main/curr_player.dart';
 import 'package:handcricket/pages/main/dice.dart';
 import 'package:handcricket/pages/main/hands.dart';
@@ -16,10 +14,11 @@ import 'package:handcricket/pages/main/team_player_list.dart';
 import 'package:handcricket/pages/main/title_bar.dart';
 import 'package:handcricket/utils/backend.dart';
 import 'package:handcricket/utils/cache.dart';
+import 'package:http/http.dart';
 
 import '../../constants.dart';
 
-enum CurrUserStatus { BAT, BOWL, VIEWER }
+enum CurrUserStatus { bat, bowl, viewer }
 
 class MainGamePage extends StatefulWidget {
   final Cache<User> userCache;
@@ -31,6 +30,7 @@ class MainGamePage extends StatefulWidget {
 }
 
 class _MainGamePageState extends State<MainGamePage> {
+  // interactive widgets
   TitleBarWidget titleBar = TitleBarWidget();
   HandsWidget hands = HandsWidget();
   StatWidget topStats = StatWidget();
@@ -39,12 +39,12 @@ class _MainGamePageState extends State<MainGamePage> {
   TeamPlayerListWidget teamPlayersList = TeamPlayerListWidget();
   DiceWidget dice = DiceWidget();
 
+  // stateful fields
   Cache<User> _userCache;
   User _self;
-  CurrUserStatus currUserStatus = CurrUserStatus.VIEWER;
+  CurrUserStatus _currUserStatus = CurrUserStatus.viewer;
   GameInfo _game;
   DatabaseReference _gameRef;
-  DataSnapshot snapshot;
 
   _MainGamePageState(this._userCache);
 
@@ -91,24 +91,28 @@ class _MainGamePageState extends State<MainGamePage> {
   }
 
   _onDicePressed(int number) async {
-    if (currUserStatus == CurrUserStatus.BAT) {
-      request(HttpMethod.POST, "/game/${_game.gameID}/bat",
-          body: {"num": number});
-    } else if (currUserStatus == CurrUserStatus.BOWL) {
-      request(HttpMethod.POST, "/game/${_game.gameID}/bowl",
-          body: {"num": number});
+    // Only 1 press allowed. Disable immediately after press.
+    dice.mState.disable();
+
+    if (_currUserStatus == CurrUserStatus.viewer) {
+      return;
     }
-    dice.mState.disable(); // Only 1 press allowed
+
+    Response response = await request(HttpMethod.POST,
+        "/game/${_game.gameID}/${describeEnum(_currUserStatus)}",
+        body: {"num": number});
+    if (!isSuccess(response)) {
+      dice.mState.enable(); // re-enable
+
+      // TODO show snack bar
+    }
   }
 
   showAlertDialog(BuildContext context, String message) {
     Widget remindButton = FlatButton(
       child: Text("Back to home page"),
       onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => GameHomePage()),
-        );
+        Navigator.pop(context);
       },
     );
     // set up the AlertDialog
@@ -145,9 +149,9 @@ class _MainGamePageState extends State<MainGamePage> {
 
   _onStatChange(Event event) async {
     // Last thing that is updated in the server -- this means that everything has been done by the server for this round
-    snapshot = await _gameRef.once();
+    var snapshot = await _gameRef.once();
 
-    //disable dice buttons
+    // disable dice buttons
     dice.mState.disable();
 
     int batHand = snapshot.value["hands"]["bat"];
@@ -159,8 +163,9 @@ class _MainGamePageState extends State<MainGamePage> {
         hands.mState.setHands(batHand, bowlHand);
       else
         hands.mState.setHands(bowlHand, batHand);
-      await Future.delayed(
-          Duration(seconds: 3)); // sleep for 3 seconds after setting hands
+
+      // sleep for 1.5 seconds after setting hands
+      await Future.delayed(Duration(seconds: 1, milliseconds: 500));
     }
 
     titleBar.mState.setStatus(redBatting);
@@ -170,23 +175,25 @@ class _MainGamePageState extends State<MainGamePage> {
         new List<String>.from(snapshot.value["teams"]["red"]);
     List<String> bluePlayers =
         new List<String>.from(snapshot.value["teams"]["blue"]);
+    // TODO see if can directly read in Map<String, UserStat>.
     Map<String, dynamic> players =
         Map<String, dynamic>.from(snapshot.value["players"]);
 
-    for (var uid in players.keys) {
+    for (var uid in redPlayers) {
       User user = await _userCache.get(uid);
-      if (redPlayers.contains(uid))
-        redStats.add(
-            new UserStat(user, players[uid]["runs"], players[uid]["wickets"]));
-      else
-        blueStats.add(
-            new UserStat(user, players[uid]["runs"], players[uid]["wickets"]));
+      redStats.add(
+          new UserStat(user, players[uid]["runs"], players[uid]["wickets"]));
+    }
+    for (var uid in bluePlayers) {
+      User user = await _userCache.get(uid);
+      blueStats.add(
+          new UserStat(user, players[uid]["runs"], players[uid]["wickets"]));
     }
 
     teamPlayersList.mState.setPlayerStats(redStats, blueStats);
     User currRedPlayer = await _userCache.get(redPlayers[0]);
-    User currBlueUser = await _userCache.get(bluePlayers[0]);
-    currPlayer.mState.setPlayers(currRedPlayer, currBlueUser);
+    User currBluePlayer = await _userCache.get(bluePlayers[0]);
+    currPlayer.mState.setPlayers(currRedPlayer, currBluePlayer);
 
     // show top and bottom stats
     GameStat gStats = new GameStat(
@@ -203,24 +210,30 @@ class _MainGamePageState extends State<MainGamePage> {
     }
 
     //enable buttons if this user is batter or bowler
-    if ((_self.uid == redPlayers[0] && redBatting) ||
-        (_self.uid == bluePlayers[0] && !redBatting)) {
-      currUserStatus = CurrUserStatus.BAT;
+    if ((_self.uid == currRedPlayer.uid && redBatting) ||
+        (_self.uid == currBluePlayer.uid && !redBatting)) {
+      _currUserStatus = CurrUserStatus.bat;
       dice.mState.enable();
-    } else if ((_self.uid == redPlayers[0] && !redBatting) ||
-        (_self.uid == bluePlayers[0] && redBatting)) {
-      currUserStatus = CurrUserStatus.BOWL;
+    } else if ((_self.uid == currRedPlayer.uid && !redBatting) ||
+        (_self.uid == currBluePlayer.uid && redBatting)) {
+      _currUserStatus = CurrUserStatus.bowl;
       dice.mState.enable();
     } else {
-      currUserStatus = CurrUserStatus.VIEWER;
+      _currUserStatus = CurrUserStatus.viewer;
     }
   }
 
-  _onSecretChange(Event event) {
-    if(currUserStatus != CurrUserStatus.BAT || event.snapshot.value["bat"] == -1 || event.snapshot.value["bowl"] == -1){
+  _onSecretChange(Event event) async {
+    if (_currUserStatus != CurrUserStatus.bat ||
+        event.snapshot.value["bat"] == -1 ||
+        event.snapshot.value["bowl"] == -1) {
       return;
     }
     // Call update endpoint
-    request(HttpMethod.POST, "/game/${_game.gameID}/update");
+    Response response =
+        await request(HttpMethod.POST, "/game/${_game.gameID}/update");
+    if (!isSuccess(response)) {
+      // TODO show snack bar
+    }
   }
 }

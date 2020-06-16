@@ -20,12 +20,20 @@ class _DiceWidgetState extends State<DiceWidget> {
   }
 
   disable() {
+    if (_disable) {
+      return;
+    }
+
     setState(() {
       _disable = true;
     });
   }
 
   enable() {
+    if (!_disable) {
+      return;
+    }
+
     setState(() {
       _disable = false;
     });

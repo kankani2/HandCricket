@@ -31,14 +31,14 @@ class _GameHomePageState extends State<GameHomePage> {
     Map respBody = jsonDecode(response.body);
     GameInfo currGame = GameInfo(respBody["gameCode"], respBody["gameID"]);
     await currGame.storeGameInfoToDisk();
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CreateGamePage()),
     );
   }
 
   void joinGame() async {
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => JoinGamePage()),
     );

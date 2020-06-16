@@ -18,7 +18,7 @@ import 'package:http/http.dart';
 
 import '../../constants.dart';
 
-enum CurrUserStatus { bat, bowl, viewer }
+enum CurrUserStatus { BAT, BOWL, VIEWER }
 
 class MainGamePage extends StatefulWidget {
   final Cache<User> userCache;
@@ -42,7 +42,7 @@ class _MainGamePageState extends State<MainGamePage> {
   // stateful fields
   Cache<User> _userCache;
   User _self;
-  CurrUserStatus _currUserStatus = CurrUserStatus.viewer;
+  CurrUserStatus _currUserStatus = CurrUserStatus.VIEWER;
   GameInfo _game;
   DatabaseReference _gameRef;
 
@@ -87,14 +87,14 @@ class _MainGamePageState extends State<MainGamePage> {
         .child(_game.gameID);
 
     _gameRef.child("stats").onValue.listen(_onStatChange);
-    _gameRef.child("secrets").onValue.listen(_onSecretChange);
+    _gameRef.child("secret").onValue.listen(_onSecretChange);
   }
 
   _onDicePressed(int number) async {
     // Only 1 press allowed. Disable immediately after press.
     dice.mState.disable();
 
-    if (_currUserStatus == CurrUserStatus.viewer) {
+    if (_currUserStatus == CurrUserStatus.VIEWER) {
       return;
     }
 
@@ -212,19 +212,19 @@ class _MainGamePageState extends State<MainGamePage> {
     //enable buttons if this user is batter or bowler
     if ((_self.uid == currRedPlayer.uid && redBatting) ||
         (_self.uid == currBluePlayer.uid && !redBatting)) {
-      _currUserStatus = CurrUserStatus.bat;
+      _currUserStatus = CurrUserStatus.BAT;
       dice.mState.enable();
     } else if ((_self.uid == currRedPlayer.uid && !redBatting) ||
         (_self.uid == currBluePlayer.uid && redBatting)) {
-      _currUserStatus = CurrUserStatus.bowl;
+      _currUserStatus = CurrUserStatus.BOWL;
       dice.mState.enable();
     } else {
-      _currUserStatus = CurrUserStatus.viewer;
+      _currUserStatus = CurrUserStatus.VIEWER;
     }
   }
 
   _onSecretChange(Event event) async {
-    if (_currUserStatus != CurrUserStatus.bat ||
+    if (_currUserStatus != CurrUserStatus.BAT ||
         event.snapshot.value["bat"] == -1 ||
         event.snapshot.value["bowl"] == -1) {
       return;

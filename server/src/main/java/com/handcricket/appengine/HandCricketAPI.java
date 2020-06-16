@@ -252,7 +252,7 @@ public class HandCricketAPI {
         // update game stats
         Stats stats = gameSnapshot.child("stats").getValue(new GenericTypeIndicator<Stats>() {
         });
-        Teams  teams = gameSnapshot.child("teams").getValue(new GenericTypeIndicator<Teams>() {
+        Teams teams = gameSnapshot.child("teams").getValue(new GenericTypeIndicator<Teams>() {
         });
         boolean redTeamBatting = gameSnapshot.child("redTeamBatting").getValue(new GenericTypeIndicator<Boolean>() {
         });

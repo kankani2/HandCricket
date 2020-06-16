@@ -9,11 +9,32 @@ class DiceWidget extends StatefulWidget {
 }
 
 class _DiceWidgetState extends State<DiceWidget> {
+  bool _disable = true;
+  Function(int) _callback;
+
   @override
   Widget build(BuildContext context) {
     return Row(
       children: _getButtons(),
     );
+  }
+
+  disable() {
+    setState(() {
+      _disable = true;
+    });
+  }
+
+  enable() {
+    setState(() {
+      _disable = false;
+    });
+  }
+
+  registerCallback(Function(int) callback) {
+    setState(() {
+      _callback = callback;
+    });
   }
 
   List<Expanded> _getButtons() {
@@ -27,9 +48,11 @@ class _DiceWidgetState extends State<DiceWidget> {
               "images/dice/dice${i + 1}.png",
             ),
             splashColor: Colors.black,
-            onPressed: () {
-              // TODO: implement
-            },
+            onPressed: _disable
+                ? null
+                : () {
+                    _callback(i + 1);
+                  },
           ),
         ),
       );

@@ -38,6 +38,7 @@ class _CurrPlayerWidgetState extends State<CurrPlayerWidget> {
   Expanded _getPlayerAndIcon(User currUser, Color color) {
     return Expanded(
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           ImageIcon(
             AssetImage(iconMap[currUser.icon]),
@@ -46,6 +47,7 @@ class _CurrPlayerWidgetState extends State<CurrPlayerWidget> {
           ),
           Text(
             currUser.name,
+            textAlign: TextAlign.center,
             style: TextStyle(
               color: color,
               fontSize: 25,

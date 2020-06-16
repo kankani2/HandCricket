@@ -29,6 +29,14 @@ public class DB {
         mustExist(snapshot);
     }
 
+    static Game getGame_sync(String gameID) throws InternalServerErrorException, NotFoundException {
+        DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.GAMES).child(gameID));
+        mustExist(snapshot);
+
+        return snapshot.getValue(new GenericTypeIndicator<Game>() {
+        });
+    }
+
     static User getUser_sync(String uid) throws InternalServerErrorException, NotFoundException {
         DataSnapshot snapshot = getDataSnapshot_sync(HandCricketServlet.firebase.child(DB.USERS).child(uid));
         mustExist(snapshot);

@@ -1,6 +1,7 @@
 package com.handcricket.appengine.datamodel;
 
 import java.util.HashMap;
+import java.util.Random;
 
 public class Game {
     // Changing these variable names might break functionality.
@@ -8,15 +9,25 @@ public class Game {
     private String code;
     private String host;
     private String message;
+    private Hands hands;
+    private Hands secret;
+    private boolean redBatting;
+    private Teams teams;
+    private Stats stats;
 
     public Game() {}
 
     public Game(String uid, String gameCode) {
-        this.host = uid;
-        this.players = new HashMap<>();
-        this.players.put(uid, new PlayerStats());
-        this.code = gameCode;
-        this.message = "Waiting for players to join...";
+        host = uid;
+        players = new HashMap<>();
+        players.put(uid, new PlayerStats());
+        code = gameCode;
+        message = "Waiting for players to join...";
+        hands = new Hands();
+        secret = new Hands();
+        redBatting = new Random().nextBoolean();
+        teams = new Teams();
+        stats = new Stats();
     }
 
     public HashMap<String, PlayerStats> getPlayers() {
@@ -49,5 +60,45 @@ public class Game {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public Hands getHands() {
+        return hands;
+    }
+
+    public void setHands(Hands hands) {
+        this.hands = hands;
+    }
+
+    public Hands getSecret() {
+        return secret;
+    }
+
+    public void setSecret(Hands secret) {
+        this.secret = secret;
+    }
+
+    public boolean isRedBatting() {
+        return redBatting;
+    }
+
+    public void setRedBatting(boolean redBatting) {
+        this.redBatting = redBatting;
+    }
+
+    public Teams getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Teams teams) {
+        this.teams = teams;
+    }
+
+    public Stats getStats() {
+        return stats;
+    }
+
+    public void setStats(Stats stats) {
+        this.stats = stats;
     }
 }

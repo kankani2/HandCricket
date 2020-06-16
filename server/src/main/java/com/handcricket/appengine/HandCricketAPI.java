@@ -257,7 +257,7 @@ public class HandCricketAPI {
         // update game stats
         Stats stats = gameSnapshot.child("stats").getValue(new GenericTypeIndicator<Stats>() {
         });
-        Teams teams = gameSnapshot.child("teams").getValue(new GenericTypeIndicator<Teams>() {
+        Teams  teams = gameSnapshot.child("teams").getValue(new GenericTypeIndicator<Teams>() {
         });
         boolean redTeamBatting = gameSnapshot.child("redTeamBatting").getValue(new GenericTypeIndicator<Boolean>() {
         });
@@ -352,14 +352,14 @@ public class HandCricketAPI {
             bowlingTeam.add(currBowlerUID);
         }
 
-        // Update overall stats, team lists, current batting team to Firebase
-        gameRef.child("stats").setValue(stats);
-        gameRef.child("redTeamBatting").setValue(redTeamBatting);
-        gameRef.child("teams").setValue(teams);
-
         // Update game message if not empty
         if (message != null) {
             gameRef.child("message").setValue(message);
         }
+
+        // Update overall stats, team lists, current batting team to Firebase
+        gameRef.child("redTeamBatting").setValue(redTeamBatting);
+        gameRef.child("teams").setValue(teams);
+        gameRef.child("stats").setValue(stats);
     }
 }

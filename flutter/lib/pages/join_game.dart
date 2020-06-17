@@ -37,15 +37,17 @@ class _JoinGamePage extends State<JoinGamePage> {
           child: TextField(
             controller: textControllers[i],
             textAlign: TextAlign.center,
-            cursorColor: Colors.white,
+            cursorColor: yellowColor,
             keyboardType: TextInputType.text,
             style: TextStyle(
-              color: Colors.white,
+              color: yellowColor,
               fontWeight: FontWeight.bold,
               fontSize: 25,
             ),
             decoration: InputDecoration(
-              border: OutlineInputBorder(),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: blackColor),
+              ),
             ),
             onChanged: (String letter) {
               if (!secondWord || i != (codeWordLength - 1)) {
@@ -65,60 +67,63 @@ class _JoinGamePage extends State<JoinGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          margin: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'ENTER CODE:',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontFamily: primaryfont,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 40,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: getTextFields(false),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: getTextFields(true),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              FlatButton(
-                color: Colors.blue[700],
-                onPressed: handleEnteredCode,
-                child: Text(
-                  'Done',
+      backgroundColor: yellowColor,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'ENTER CODE:',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: blackColor,
                     fontSize: 40,
                     fontFamily: primaryfont,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: getTextFields(false),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: getTextFields(true),
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            FlatButton(
+              color: blackColor,
+              onPressed: handleEnteredCode,
+              child: Text(
+                'Done',
+                style: TextStyle(
+                  color: yellowColor,
+                  fontSize: 40,
+                  fontFamily: primaryfont,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -136,6 +141,8 @@ class _JoinGamePage extends State<JoinGamePage> {
     var response = await request(HttpMethod.POST, "/game/player/${user.uid}",
         body: {"gameCode": code.toString()});
     if (!isSuccess(response)) {
+      print(code.toString());
+      print(response.statusCode);
       errorMessage(_scaffoldKey, 'Game could not be joined.');
       return;
     }

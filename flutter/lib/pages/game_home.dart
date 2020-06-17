@@ -47,23 +47,29 @@ class _GameHomePageState extends State<GameHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: yellowColor,
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
       body: Container(
-        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
                 Expanded(
                   child: FlatButton(
-                    color: Colors.blue[700],
+                    color: yellowColor,
                     onPressed: createGame,
                     child: Text(
                       'Create Room',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: blackColor,
                         fontSize: 40,
                         fontFamily: primaryfont,
                         fontWeight: FontWeight.bold,
@@ -80,12 +86,12 @@ class _GameHomePageState extends State<GameHomePage> {
               children: <Widget>[
                 Expanded(
                   child: FlatButton(
-                    color: Colors.blue[700],
+                    color: blackColor,
                     onPressed: joinGame,
                     child: Text(
                       'Join Room',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: yellowColor,
                         fontSize: 40,
                         fontFamily: primaryfont,
                         fontWeight: FontWeight.bold,
@@ -110,8 +116,11 @@ class _GameHomePageState extends State<GameHomePage> {
             );
           });
         },
-        child: Icon(Icons.settings),
-        backgroundColor: Colors.blue[700],
+        child: Icon(
+          Icons.settings,
+          color: yellowColor,
+        ),
+        backgroundColor: blackColor,
       ),
     );
   }

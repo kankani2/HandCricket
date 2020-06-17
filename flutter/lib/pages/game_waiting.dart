@@ -49,9 +49,17 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
+      backgroundColor: yellowColor,
       body: Container(
-        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.2), BlendMode.dstATop),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -64,7 +72,7 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
                   child: Text(
                     _message,
                     style: TextStyle(
-                      color: Colors.white,
+                      color: blackColor,
                       fontSize: 45,
                       fontFamily: primaryfont,
                     ),

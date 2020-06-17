@@ -68,29 +68,40 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: yellowColor,
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
       body: SafeArea(
         child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage(backgroundImage),
+              fit: BoxFit.cover,
+            ),
+          ),
           padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
               Container(
                 margin: EdgeInsets.symmetric(vertical: 20),
                 height: 70,
                 child: TextField(
-                  cursorColor: Colors.white,
+                  cursorColor: blackColor,
                   keyboardType: TextInputType.text,
                   controller: _usernameController,
                   style: TextStyle(
-                    color: Colors.white,
+                    color: blackColor,
                     fontSize: 30,
                   ),
                   decoration: InputDecoration(
                     errorText: _validate ? 'Value Can\'t Be Empty' : null,
                     labelText: 'First Name',
-                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(
+                      color: blackColor,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: yellowColor, width: 5),
+                    ),
                     fillColor: Colors.white,
                   ),
                   onSubmitted: (String name) {
@@ -132,12 +143,13 @@ class _SettingsPageState extends State<SettingsPage> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.black,
-                                  width: 8,
+                                  color: yellowColor,
+                                  width: 5,
                                 ),
                               ),
                               child: Image.asset(
                                 image,
+                                color: blackColor,
                                 scale: 0.8,
                               ),
                             );
@@ -159,7 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Colors.black,
                   child: Text(
                     'DONE',
-                    style: TextStyle(fontSize: 30, color: Colors.white),
+                    style: TextStyle(fontSize: 30, color: yellowColor),
                   ),
                   onPressed: _saveSettings,
                 ),

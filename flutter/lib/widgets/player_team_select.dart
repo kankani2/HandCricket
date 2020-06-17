@@ -52,7 +52,7 @@ class _PlayerTeamSelectWidgetState extends State<PlayerTeamSelectWidget> {
       child: Text(
         player.name,
         style: TextStyle(
-          color: Colors.white,
+          color: blackColor,
           fontSize: 35,
           fontFamily: primaryfont,
         ),

@@ -28,17 +28,25 @@ class _SelectIconPageState extends State<SelectIconPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
-      body: SafeArea(
+      backgroundColor: yellowColor,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.2), BlendMode.dstATop),
+            fit: BoxFit.cover,
+          ),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.symmetric(vertical: 40),
+              padding: EdgeInsets.fromLTRB(20, 80, 20, 0),
               child: Text(
                 'Choose Icon',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: blackColor,
                   fontSize: 60,
                   fontFamily: primaryfont,
                   fontWeight: FontWeight.bold,
@@ -94,7 +102,7 @@ class _SelectIconPageState extends State<SelectIconPage> {
         IconButton(
           icon: Image.asset(
             iconMap[key],
-            color: Colors.white,
+            color: blackColor,
           ),
           iconSize: 50,
           splashColor: Colors.black,

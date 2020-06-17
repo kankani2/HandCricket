@@ -30,12 +30,17 @@ class _StatWidgetState extends State<StatWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        _buildText(_left),
-        _buildText(_right),
-      ],
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      color: blackColor,
+      child: Row(
+        children: <Widget>[
+          _buildText(_left),
+          _buildText(_right),
+        ],
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      ),
     );
   }
 
@@ -44,7 +49,7 @@ class _StatWidgetState extends State<StatWidget> {
       text,
       textAlign: TextAlign.center,
       style:
-          TextStyle(color: Colors.white, fontSize: 25, fontFamily: primaryfont),
+          TextStyle(color: yellowColor, fontSize: 25, fontFamily: primaryfont),
     );
   }
 }

@@ -42,7 +42,6 @@ final teamMapping = {
 };
 
 const String primaryfont = "BalsamiqSans";
-final Color primaryColor = Colors.blue[300];
 final Color yellowColor = Colors.yellow[700];
 final Color blackColor = Colors.black;
 final String backgroundImage = "images/background.jpg";

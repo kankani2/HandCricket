@@ -23,9 +23,10 @@ class _SelectFirstNamePageState extends State<SelectFirstNamePage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => SelectIconPage(
-                  name: username,
-                )),
+          builder: (context) => SelectIconPage(
+            name: username,
+          ),
+        ),
       );
     }
   }

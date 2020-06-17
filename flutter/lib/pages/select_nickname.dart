@@ -24,8 +24,8 @@ class _SelectFirstNamePageState extends State<SelectFirstNamePage> {
         context,
         MaterialPageRoute(
             builder: (context) => SelectIconPage(
-              name: username,
-            )),
+                  name: username,
+                )),
       );
     }
   }
@@ -42,7 +42,7 @@ class _SelectFirstNamePageState extends State<SelectFirstNamePage> {
             Row(
               children: <Widget>[
                 Text(
-                  'First Name',
+                  'Nickname',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 60,
@@ -58,6 +58,8 @@ class _SelectFirstNamePageState extends State<SelectFirstNamePage> {
             Container(
               height: 70,
               child: TextField(
+                maxLength: maxNameLength,
+                maxLengthEnforced: true,
                 controller: _textEditingController,
                 cursorColor: Colors.white,
                 keyboardType: TextInputType.text,

@@ -117,13 +117,13 @@ public class HandCricketAPI {
             path = "game/player/{uid}"
     )
     public GameInfo addPlayer(GameCode gameCode, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
-        DB.userMustExist_sync(uid);
         String gameID = DB.getGameIdFrom(gameCode.getGameCode());
         // Do not add player if there's 10 players already (Not a hard requirement due to possible race conditions)
         Game game = DB.getGame_sync(gameID);
         if (game.getPlayers().size() >= 10) {
             throw new InternalServerErrorException("No more players can be added. ");
         }
+        DB.userMustExist_sync(uid);
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).setValue(new PlayerStats());
         return new GameInfo(gameCode.getGameCode(), gameID);
     }

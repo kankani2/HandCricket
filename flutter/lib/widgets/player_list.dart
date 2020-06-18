@@ -4,6 +4,8 @@ import 'package:handcricket/models/game_info.dart';
 import 'package:handcricket/models/user.dart';
 import 'package:handcricket/utils/cache.dart';
 
+import '../constants.dart';
+
 class PlayerListWidget extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Cache<User> userCache;
@@ -55,18 +57,19 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
   Widget build(BuildContext context) {
     return Expanded(
       child: ListView(
-        children: getPlayerNameWidgets(_players),
+        children: getPlayerWidgets(_players),
       ),
     );
   }
 
-  static List<Container> getPlayerNameWidgets(List<User> players) {
+  static List<Container> getPlayerWidgets(List<User> players) {
     List<Container> playerContainers = new List<Container>();
     if (players == null) return playerContainers;
     for (int i = 0; i < players.length; i++) {
       playerContainers.add(
         Container(
           margin: EdgeInsets.symmetric(vertical: 10),
+          padding: EdgeInsets.all(15),
           decoration: BoxDecoration(
             border: Border.all(
               color: Colors.black,
@@ -74,10 +77,22 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
             borderRadius: BorderRadius.all(Radius.circular(20)),
             color: Colors.grey[300],
           ),
-          child: Text(
-            players[i].name,
-            style: TextStyle(fontSize: 25.0),
-            textAlign: TextAlign.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              ImageIcon(
+                AssetImage(iconMap[players[i].icon]),
+                size: 35,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Text(
+                players[i].name,
+                style: TextStyle(fontSize: 25.0),
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       );

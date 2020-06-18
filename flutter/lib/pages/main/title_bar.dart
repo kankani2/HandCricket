@@ -33,10 +33,10 @@ class _TitleBarWidgetState extends State<TitleBarWidget> {
   String _getTitle(bool redBatting, int index) {
     // red is always index 0
     if ((redBatting && index == 0) || (!redBatting && index == 1)) {
-      return "Batting";
+      return "BATTING";
     }
 
-    return "Bowling";
+    return "BOWLING";
   }
 
   List<Widget> _getChildren(bool redBatting) {
@@ -47,9 +47,7 @@ class _TitleBarWidgetState extends State<TitleBarWidget> {
           _getTitle(redBatting, index),
           textAlign: TextAlign.center,
           style: TextStyle(
-              color: team.color,
-              fontSize: 30,
-              fontFamily: primaryfont),
+              color: team.color, fontSize: 30, fontFamily: primaryfont),
         ),
       );
     });

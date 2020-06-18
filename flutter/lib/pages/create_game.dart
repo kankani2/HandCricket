@@ -66,68 +66,73 @@ class _CreateGamePage extends State<CreateGamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: primaryColor,
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.all(20),
-          margin: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'CODE:',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontFamily: primaryfont,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: getGameCodeWidgets(_code),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Players:',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontFamily: primaryfont,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              PlayerListWidget(
-                scaffoldKey: _scaffoldKey,
-                userCache: _userCache,
-              ),
-              FlatButton(
-                color: Colors.blue[700],
-                onPressed: moveToTeamMatch,
-                child: Text(
-                  'Done',
+      backgroundColor: yellowColor,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.2), BlendMode.dstATop),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'CODE:',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: blackColor,
                     fontSize: 40,
                     fontFamily: primaryfont,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: getGameCodeWidgets(_code),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  'Players:',
+                  style: TextStyle(
+                    color: blackColor,
+                    fontSize: 40,
+                    fontFamily: primaryfont,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            PlayerListWidget(
+              scaffoldKey: _scaffoldKey,
+              userCache: _userCache,
+            ),
+            FlatButton(
+              color: blackColor,
+              onPressed: moveToTeamMatch,
+              child: Text(
+                'Done',
+                style: TextStyle(
+                  color: yellowColor,
+                  fontSize: 40,
+                  fontFamily: primaryfont,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

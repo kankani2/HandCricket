@@ -34,18 +34,24 @@ class _SelectFirstNamePageState extends State<SelectFirstNamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
+      backgroundColor: yellowColor,
       body: Container(
-        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            fit: BoxFit.cover,
+          ),
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Row(
               children: <Widget>[
                 Text(
                   'Nickname',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: blackColor,
                     fontSize: 60,
                     fontFamily: primaryfont,
                     fontWeight: FontWeight.bold,
@@ -62,16 +68,21 @@ class _SelectFirstNamePageState extends State<SelectFirstNamePage> {
                 maxLength: maxNameLength,
                 maxLengthEnforced: true,
                 controller: _textEditingController,
-                cursorColor: Colors.white,
+                cursorColor: yellowColor,
                 keyboardType: TextInputType.text,
                 style: TextStyle(
-                  color: Colors.white,
+                  decoration: TextDecoration.none,
+                  color: blackColor,
                   fontSize: 30,
                 ),
                 decoration: InputDecoration(
                   errorText: _validate ? 'Value Can\'t Be Empty' : null,
-                  border: OutlineInputBorder(),
-                  fillColor: Colors.white,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: yellowColor, width: 5),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: yellowColor, width: 5),
+                  ),
                 ),
                 onSubmitted: _onNameSubmit,
               ),

@@ -57,21 +57,27 @@ class _MainGamePageState extends State<MainGamePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: primaryColor,
-      body: SafeArea(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-          child: Column(
-            children: <Widget>[
-              titleBar,
-              hands,
-              currPlayer,
-              topStats,
-              bottomStats,
-              teamPlayersList,
-              dice,
-            ],
+      backgroundColor: yellowColor,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            colorFilter: new ColorFilter.mode(
+                Colors.black.withOpacity(0.2), BlendMode.dstATop),
+            fit: BoxFit.cover,
           ),
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 20),
+        child: Column(
+          children: <Widget>[
+            titleBar,
+            hands,
+            currPlayer,
+            topStats,
+            bottomStats,
+            teamPlayersList,
+            dice,
+          ],
         ),
       ),
     );

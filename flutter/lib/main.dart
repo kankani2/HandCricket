@@ -22,7 +22,7 @@ class FirstTime extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: appName,
-      color: primaryColor,
+      color: yellowColor,
       home: SelectFirstNamePage(),
     );
   }
@@ -34,7 +34,7 @@ class Homepage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: appName,
-      color: primaryColor,
+      color: yellowColor,
       home: GameHomePage(),
     );
   }

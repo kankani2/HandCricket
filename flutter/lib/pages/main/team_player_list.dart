@@ -21,6 +21,12 @@ class _TeamPlayerListWidgetState extends State<TeamPlayerListWidget> {
       child: Row(
         children: <Widget>[
           _buildPlayerList(_red),
+          VerticalDivider(
+            thickness: 4,
+            color: blackColor,
+            indent: 30,
+            endIndent: 30,
+          ),
           _buildPlayerList(_blue),
         ],
       ),
@@ -37,19 +43,23 @@ class _TeamPlayerListWidgetState extends State<TeamPlayerListWidget> {
   Widget _buildPlayerList(List<UserStat> playerStats) {
     var playerContainers = new List<Widget>();
     playerStats.forEach((player) {
-      playerContainers.add(Row(
-        children: <Widget>[
-          Expanded(
-            child: _getText(player.user.name, 25),
-          ),
-          Column(
-            children: <Widget>[
-              _getText("R: ${player.runs}", 15),
-              _getText("W: ${player.wickets}", 15),
-            ],
-          )
-        ],
-      ));
+      playerContainers.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            _getText(player.user.name, 25),
+            SizedBox(
+              width: 15,
+            ),
+            Column(
+              children: <Widget>[
+                _getText("R: ${player.runs}", 15),
+                _getText("W: ${player.wickets}", 15),
+              ],
+            )
+          ],
+        ),
+      );
     });
 
     return Expanded(
@@ -64,7 +74,10 @@ class _TeamPlayerListWidgetState extends State<TeamPlayerListWidget> {
       text,
       textAlign: TextAlign.center,
       style: TextStyle(
-          color: Colors.white, fontSize: fontSize, fontFamily: primaryfont),
+          color: blackColor,
+          fontWeight: FontWeight.bold,
+          fontSize: fontSize,
+          fontFamily: primaryfont),
     );
   }
 }

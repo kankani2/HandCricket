@@ -80,6 +80,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 margin: EdgeInsets.symmetric(vertical: 20),
                 height: 70,
                 child: TextField(
+                  maxLength: maxNameLength,
+                  maxLengthEnforced: true,
                   cursorColor: Colors.white,
                   keyboardType: TextInputType.text,
                   controller: _usernameController,
@@ -89,7 +91,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   decoration: InputDecoration(
                     errorText: _validate ? 'Value Can\'t Be Empty' : null,
-                    labelText: 'First Name',
+                    labelText: 'Nickname',
                     border: OutlineInputBorder(),
                     fillColor: Colors.white,
                   ),

@@ -45,3 +45,4 @@ const String primaryfont = "BalsamiqSans";
 final Color primaryColor = Colors.blue[300];
 const String appName = "Hand Cricket";
 const int codeWordLength = 8;
+const int maxNameLength = 8;

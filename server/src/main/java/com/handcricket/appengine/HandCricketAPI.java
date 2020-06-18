@@ -3,6 +3,7 @@ package com.handcricket.appengine;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.Named;
+import com.google.api.server.spi.response.BadRequestException;
 import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.firebase.database.DataSnapshot;
@@ -120,6 +121,11 @@ public class HandCricketAPI {
     public GameInfo addPlayer(GameCode gameCode, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
         DB.userMustExist_sync(uid);
         String gameID = DB.getGameIdFrom(gameCode.getGameCode());
+        // Do not add player if there's 10 players already (Not a hard requirement due to possible race conditions)
+        Game game = DB.getGame_sync(gameID);
+        if(game.getPlayers().size() >=10){
+            throw new InternalServerErrorException("No more players can be added. ");
+        }
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).setValue(new PlayerStats());
         return new GameInfo(gameCode.getGameCode(), gameID);
     }
@@ -156,9 +162,13 @@ public class HandCricketAPI {
             path = "game/{gameID}/match"
     )
     public void teamMatch(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        Game game = DB.getGame_sync(gameID);
+        // Check if there's >= 2 players, else throw error
+        if(game.getPlayers().size()<2){
+            throw new InternalServerErrorException("Not enough players to move to team matching stage.");
+        }
         // Free the game code
-        String gameCode = DB.getGameCode_sync(gameID);
-        HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
+        HandCricketServlet.firebase.child(DB.CODES).child(game.getCode()).removeValue();
         // Update game message
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue("The host is selecting teams...");
     }

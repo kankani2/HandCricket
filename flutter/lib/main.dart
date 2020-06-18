@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:handcricket/constants.dart';
 import 'package:handcricket/pages/game_home.dart';
-import 'package:handcricket/pages/select_first_name.dart';
+import 'package:handcricket/pages/select_nickname.dart';
 import 'package:handcricket/models/user.dart';
 
 void main() {

@@ -47,3 +47,4 @@ final Color blackColor = Colors.black;
 final String backgroundImage = "images/background.jpg";
 const String appName = "Hand Cricket";
 const int codeWordLength = 8;
+const int maxNameLength = 8;

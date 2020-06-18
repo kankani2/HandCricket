@@ -141,8 +141,6 @@ class _JoinGamePage extends State<JoinGamePage> {
     var response = await request(HttpMethod.POST, "/game/player/${user.uid}",
         body: {"gameCode": code.toString()});
     if (!isSuccess(response)) {
-      print(code.toString());
-      print(response.statusCode);
       errorMessage(_scaffoldKey, 'Game could not be joined.');
       return;
     }

@@ -14,6 +14,8 @@ import com.handcricket.appengine.datamodel.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static java.lang.Math.max;
+
 @Api(
         name = "handcricket",
         version = "v1"
@@ -262,8 +264,9 @@ public class HandCricketAPI {
             stats.setWickets(stats.getWickets() + 1);
             stats.setBalls(stats.getBalls() + 1);
 
-            // Check if this was the last batter of the team
-            if (stats.getWickets() == battingTeam.size()) {
+            // For unequal teams, the smaller team gets extra wickets
+            // Therefore each team bats for max(battingTeam.size(), bowlingTeam.size()) times
+            if (stats.getWickets() == max(battingTeam.size(), bowlingTeam.size())) {
 
                 // Check if this is the end of the game
                 if (stats.getTarget() == -1) {

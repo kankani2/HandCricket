@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -45,8 +47,17 @@ class _MainGamePageState extends State<MainGamePage> {
   CurrUserStatus _currUserStatus = CurrUserStatus.VIEWER;
   GameInfo _game;
   DatabaseReference _gameRef;
+  StreamSubscription _subscriptionStat;
+  StreamSubscription _subscriptionSecret;
 
   _MainGamePageState(this._userCache);
+
+  @override
+  void dispose() {
+    _subscriptionStat.cancel();
+    _subscriptionSecret.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -92,8 +103,9 @@ class _MainGamePageState extends State<MainGamePage> {
         .child("games")
         .child(_game.gameID);
 
-    _gameRef.child("stats").onValue.listen(_onStatChange);
-    _gameRef.child("secret").onValue.listen(_onSecretChange);
+    _subscriptionStat = _gameRef.child("stats").onValue.listen(_onStatChange);
+    _subscriptionSecret =
+        _gameRef.child("secret").onValue.listen(_onSecretChange);
   }
 
   _onDicePressed(int number) async {

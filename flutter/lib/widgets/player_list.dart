@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/game_info.dart';
@@ -24,8 +26,15 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
   GlobalKey<ScaffoldState> _scaffoldKey;
   Cache<User> _userCache;
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
+  StreamSubscription _subscriptionPlayers;
 
   _PlayerListWidgetState(this._scaffoldKey, this._userCache);
+
+  @override
+  void dispose() {
+    _subscriptionPlayers.cancel();
+    super.dispose();
+  }
 
   @override
   void initState() {
@@ -36,7 +45,7 @@ class _PlayerListWidgetState extends State<PlayerListWidget> {
   }
 
   void addListenerForGameToUpdatePlayers(GameInfo game) {
-    _gamesRef
+    _subscriptionPlayers = _gamesRef
         .child(game.gameID)
         .child("players")
         .onChildAdded

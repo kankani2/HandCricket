@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:handcricket/models/user.dart';
@@ -19,7 +21,15 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
   String _message = "";
   var _userCache = new Cache<User>(User.getUser);
+  StreamSubscription _subscription;
 
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     GameInfo.getGameInfoFromDisk().then((game) async {
@@ -28,7 +38,11 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
   }
 
   void addListenerForGameMessage(GameInfo game) {
-    _gamesRef.child(game.gameID).child("message").onValue.listen((event) async {
+    _subscription = _gamesRef
+        .child(game.gameID)
+        .child("message")
+        .onValue
+        .listen((event) async {
       if (event.snapshot.value == null) {
         Navigator.pushReplacement(
           context,

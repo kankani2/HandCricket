@@ -76,7 +76,7 @@ public class HandCricketAPI {
         DatabaseReference codesRef = HandCricketServlet.firebase.child(DB.CODES);
         DataSnapshot snapshot = DB.getDataSnapshot_sync(codesRef);
 
-        int numCodeWords = FourLetterCodes.CODES.length;
+        int numCodeWords = Constants.CODES.length;
         if (snapshot.getChildrenCount() >= numCodeWords * numCodeWords) {
             throw new InternalServerErrorException("Could not assign a game code because all game codes are exhausted.");
         }
@@ -86,7 +86,7 @@ public class HandCricketAPI {
             Random rand = new Random();
             int firstIndex = rand.nextInt(numCodeWords);
             int secondIndex = rand.nextInt(numCodeWords);
-            gameCode = FourLetterCodes.CODES[firstIndex] + " " + FourLetterCodes.CODES[secondIndex];
+            gameCode = Constants.CODES[firstIndex] + " " + Constants.CODES[secondIndex];
             if (!snapshot.hasChild(gameCode)) {
                 // TODO: handle race conditions
                 codesRef.child(gameCode).setValue(gameID);
@@ -120,7 +120,7 @@ public class HandCricketAPI {
         String gameID = DB.getGameIdFrom(gameCode.getGameCode());
         // Do not add player if there's 10 players already (Not a hard requirement due to possible race conditions)
         Game game = DB.getGame_sync(gameID);
-        if (game.getPlayers().size() >= 10) {
+        if (game.getPlayers().size() >= Constants.MAX_PLAYERS) {
             throw new InternalServerErrorException("No more players can be added. ");
         }
         DB.userMustExist_sync(uid);
@@ -167,7 +167,7 @@ public class HandCricketAPI {
     public void teamMatch(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         Game game = DB.getGame_sync(gameID);
         // Check if there's >= 2 players, else throw error
-        if (game.getPlayers().size() < 2) {
+        if (game.getPlayers().size() < Constants.MIN_PLAYERS) {
             throw new InternalServerErrorException("Not enough players to move to team matching stage.");
         }
         // Free the game code

@@ -11,7 +11,6 @@ import com.google.firebase.database.GenericTypeIndicator;
 import com.handcricket.appengine.datamodel.*;
 
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -67,7 +66,7 @@ public class HandCricketAPI {
             httpMethod = ApiMethod.HttpMethod.POST,
             path = "game"
     )
-    public GameInfo createGame(UID uid) throws NotFoundException, InternalServerErrorException, FileNotFoundException {
+    public GameInfo createGame(UID uid) throws NotFoundException, InternalServerErrorException {
         // Creating a node under games
         DB.userMustExist_sync(uid.getUid());
         DatabaseReference gamesRef = HandCricketServlet.firebase.child(DB.GAMES);
@@ -77,7 +76,7 @@ public class HandCricketAPI {
         DatabaseReference codesRef = HandCricketServlet.firebase.child(DB.CODES);
         DataSnapshot snapshot = DB.getDataSnapshot_sync(codesRef);
 
-        int numCodeWords = FourLetterCodes.CODES.length;
+        int numCodeWords = Constants.CODES.length;
         if (snapshot.getChildrenCount() >= numCodeWords * numCodeWords) {
             throw new InternalServerErrorException("Could not assign a game code because all game codes are exhausted.");
         }
@@ -87,7 +86,7 @@ public class HandCricketAPI {
             Random rand = new Random();
             int firstIndex = rand.nextInt(numCodeWords);
             int secondIndex = rand.nextInt(numCodeWords);
-            gameCode = FourLetterCodes.CODES[firstIndex] + " " + FourLetterCodes.CODES[secondIndex];
+            gameCode = Constants.CODES[firstIndex] + " " + Constants.CODES[secondIndex];
             if (!snapshot.hasChild(gameCode)) {
                 // TODO: handle race conditions
                 codesRef.child(gameCode).setValue(gameID);
@@ -106,7 +105,7 @@ public class HandCricketAPI {
             httpMethod = ApiMethod.HttpMethod.DELETE,
             path = "game/{gameID}"
     )
-    public void deleteGame(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException, FileNotFoundException {
+    public void deleteGame(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
         String gameCode = DB.getGameCode_sync(gameID);
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).removeValue();
         HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
@@ -118,8 +117,13 @@ public class HandCricketAPI {
             path = "game/player/{uid}"
     )
     public GameInfo addPlayer(GameCode gameCode, @Named("uid") String uid) throws NotFoundException, InternalServerErrorException {
-        DB.userMustExist_sync(uid);
         String gameID = DB.getGameIdFrom(gameCode.getGameCode());
+        // Do not add player if there's 10 players already (Not a hard requirement due to possible race conditions)
+        Game game = DB.getGame_sync(gameID);
+        if (game.getPlayers().size() >= Constants.MAX_PLAYERS) {
+            throw new InternalServerErrorException("No more players can be added. ");
+        }
+        DB.userMustExist_sync(uid);
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("players").child(uid).setValue(new PlayerStats());
         return new GameInfo(gameCode.getGameCode(), gameID);
     }
@@ -140,7 +144,12 @@ public class HandCricketAPI {
             httpMethod = ApiMethod.HttpMethod.POST,
             path = "game/{gameID}/start"
     )
-    public void startGame(Teams team, @Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+    public void startGame(Teams team, @Named("gameID") String gameID) throws InternalServerErrorException {
+        // Ensure that each team has at least 1 player
+        if (team.getRed().size() < 1 || team.getBlue().size() < 1) {
+            throw new InternalServerErrorException("Each team should have at least 1 member. ");
+        }
+
         DatabaseReference gameRef = HandCricketServlet.firebase.child(DB.GAMES).child(gameID);
 
         // Store assigned team value for each player
@@ -156,9 +165,13 @@ public class HandCricketAPI {
             path = "game/{gameID}/match"
     )
     public void teamMatch(@Named("gameID") String gameID) throws NotFoundException, InternalServerErrorException {
+        Game game = DB.getGame_sync(gameID);
+        // Check if there's >= 2 players, else throw error
+        if (game.getPlayers().size() < Constants.MIN_PLAYERS) {
+            throw new InternalServerErrorException("Not enough players to move to team matching stage.");
+        }
         // Free the game code
-        String gameCode = DB.getGameCode_sync(gameID);
-        HandCricketServlet.firebase.child(DB.CODES).child(gameCode).removeValue();
+        HandCricketServlet.firebase.child(DB.CODES).child(game.getCode()).removeValue();
         // Update game message
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).child("message").setValue("The host is selecting teams...");
     }
@@ -227,7 +240,7 @@ public class HandCricketAPI {
         });
     }
 
-    private void updateGameStats(Game game, int bat, int bowl) throws NotFoundException, InternalServerErrorException {
+    private void updateGameStats(Game game, int bat, int bowl) {
         String message = null;
 
         // Make pointers to team lists within team and make changes to it

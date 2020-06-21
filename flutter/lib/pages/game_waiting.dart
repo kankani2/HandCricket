@@ -21,11 +21,11 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
   var _gamesRef = FirebaseDatabase.instance.reference().child('games');
   String _message = "";
   var _userCache = new Cache<User>(User.getUser);
-  StreamSubscription _subscription;
+  StreamSubscription _subscriptionMessage;
 
   @override
   void dispose() {
-    _subscription.cancel();
+    _subscriptionMessage.cancel();
     super.dispose();
   }
 
@@ -38,7 +38,7 @@ class _GameWaitingPageState extends State<GameWaitingPage> {
   }
 
   void addListenerForGameMessage(GameInfo game) {
-    _subscription = _gamesRef
+    _subscriptionMessage = _gamesRef
         .child(game.gameID)
         .child("message")
         .onValue

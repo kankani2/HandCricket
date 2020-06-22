@@ -11,12 +11,14 @@ class MessageBarWidget extends StatefulWidget {
 }
 
 class _MessageBarWidgetState extends State<MessageBarWidget> {
-  String message = "";
+  String _message = "";
 
   setMessage(String msg) {
-    setState(() {
-      message = msg;
-    });
+    if (_message != msg) {
+      setState(() {
+        _message = msg;
+      });
+    }
   }
 
   @override
@@ -29,7 +31,7 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
-            message,
+            _message,
             textAlign: TextAlign.center,
             style: TextStyle(
                 color: blackColor, fontSize: 25, fontFamily: primaryfont),

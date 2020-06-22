@@ -244,6 +244,7 @@ public class HandCricketAPI {
 
     private void updateGameStats(Game game, int bat, int bowl) {
         String message = null;
+        game.setMessageBar("");
 
         // Make pointers to team lists within team and make changes to it
         ArrayList<String> battingTeam;
@@ -271,6 +272,7 @@ public class HandCricketAPI {
                 // Check if this is the end of the game
                 if (stats.getTarget() == -1) {
                     // Game is not over - switch batting/bowling
+                    game.setMessageBar("LAST PLAYER BOWLED OUT!");
 
                     // Set score as target and refresh all other stats
                     stats.setTarget(stats.getRuns() + 1);
@@ -282,6 +284,7 @@ public class HandCricketAPI {
                     game.setRedBatting(!game.isRedBatting());
                 } else {
                     // Game is over
+                    game.setMessageBar("GAME OVER!");
 
                     // Check who won
                     int target = stats.getTarget();
@@ -297,6 +300,9 @@ public class HandCricketAPI {
                         message = getMessageForWinner(game.isRedBatting(), false);
                     }
                 }
+            }
+            else{
+                game.setMessageBar("CATCH OUT!");
             }
 
             // Move current batter to end of the list
@@ -314,6 +320,9 @@ public class HandCricketAPI {
             // Runs +bat, wickets +0, balls +1
             stats.setRuns(stats.getRuns() + bat);
             stats.setBalls(stats.getBalls() + 1);
+
+            if(bat == 6) game.setMessageBar("THAT'S A SIXER!");
+            if(bat == 4) game.setMessageBar("THAT'S A FOUR!");
 
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);

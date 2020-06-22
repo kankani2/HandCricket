@@ -22,7 +22,7 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: blackColor,
+      color: Colors.white,
       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
@@ -32,7 +32,7 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
             message,
             textAlign: TextAlign.center,
             style: TextStyle(
-                color: yellowColor, fontSize: 25, fontFamily: primaryfont),
+                color: blackColor, fontSize: 25, fontFamily: primaryfont),
           ),
         ],
       ),

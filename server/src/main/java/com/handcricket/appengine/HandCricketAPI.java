@@ -244,7 +244,7 @@ public class HandCricketAPI {
 
     private void updateGameStats(Game game, int bat, int bowl) {
         String message = null;
-        game.setMessageBar("");
+        String messageBar = "";
 
         // Make pointers to team lists within team and make changes to it
         ArrayList<String> battingTeam;
@@ -272,7 +272,7 @@ public class HandCricketAPI {
                 // Check if this is the end of the game
                 if (stats.getTarget() == -1) {
                     // Game is not over - switch batting/bowling
-                    game.setMessageBar("LAST PLAYER BOWLED OUT!");
+                    messageBar = "LAST PLAYER BOWLED OUT!";
 
                     // Set score as target and refresh all other stats
                     stats.setTarget(stats.getRuns() + 1);
@@ -284,7 +284,7 @@ public class HandCricketAPI {
                     game.setRedBatting(!game.isRedBatting());
                 } else {
                     // Game is over
-                    game.setMessageBar("GAME OVER!");
+                    messageBar = "GAME OVER!";
 
                     // Check who won
                     int target = stats.getTarget();
@@ -302,7 +302,7 @@ public class HandCricketAPI {
                 }
             }
             else{
-                game.setMessageBar("CATCH OUT!");
+                messageBar = "CATCH OUT!";
             }
 
             // Move current batter to end of the list
@@ -321,8 +321,8 @@ public class HandCricketAPI {
             stats.setRuns(stats.getRuns() + bat);
             stats.setBalls(stats.getBalls() + 1);
 
-            if(bat == 6) game.setMessageBar("THAT'S A SIXER!");
-            if(bat == 4) game.setMessageBar("THAT'S A FOUR!");
+            if(bat == 6) messageBar = "THAT'S A SIXER!";
+            if(bat == 4) messageBar = "THAT'S A FOUR!";
 
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);
@@ -339,10 +339,21 @@ public class HandCricketAPI {
 
         //Check if BOWLER OVER is done
         if (stats.getBalls() % 6 == 0) {
+            if(messageBar =="") messageBar = "OVER DONE! NEXT BOWLER'S TURN!";
             // Move current bowler to end of the list
             String currBowlerUID = bowlingTeam.remove(0);
             bowlingTeam.add(currBowlerUID);
         }
+
+        // If no message has been set for the bar yet, set a general  random message
+        if(messageBar == "") {
+            Random rand = new Random();
+            int firstIndex = rand.nextInt(Constants.messages.length);
+            messageBar = Constants.messages[firstIndex];
+        }
+
+        // Update game message bar
+        game.setMessageBar(messageBar);
 
         // Update game message if not empty
         if (message != null) {

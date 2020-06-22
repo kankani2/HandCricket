@@ -76,7 +76,7 @@ class _MainGamePageState extends State<MainGamePage> {
           image: DecorationImage(
             image: AssetImage(backgroundImage),
             colorFilter: new ColorFilter.mode(
-                Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                Colors.black.withOpacity(0.5), BlendMode.dstATop),
             fit: BoxFit.cover,
           ),
         ),

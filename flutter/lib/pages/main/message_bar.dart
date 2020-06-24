@@ -23,21 +23,11 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.white,
-      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            _message,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                color: blackColor, fontSize: 25, fontFamily: primaryfont),
-          ),
-        ],
-      ),
+    return Text(
+      _message,
+      textAlign: TextAlign.center,
+      style:
+          TextStyle(color: blackColor, fontSize: 25, fontFamily: primaryfont),
     );
   }
 }

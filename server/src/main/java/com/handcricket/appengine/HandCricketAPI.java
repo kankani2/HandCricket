@@ -244,7 +244,7 @@ public class HandCricketAPI {
 
     private void updateGameStats(Game game, int bat, int bowl) {
         String message = null;
-        String messageBar = "";
+        String messageBar = null;
 
         // Make pointers to team lists within team and make changes to it
         ArrayList<String> battingTeam;
@@ -260,6 +260,8 @@ public class HandCricketAPI {
         Stats stats = game.getStats();
         if (bat == bowl) {
             // OUT
+            Random rand = new Random();
+            int outMsgIdx = rand.nextInt(Constants.OUT_MESSAGES.length);
 
             // Runs +0, wickets +1, balls +1
             stats.setWickets(stats.getWickets() + 1);
@@ -272,7 +274,7 @@ public class HandCricketAPI {
                 // Check if this is the end of the game
                 if (stats.getTarget() == -1) {
                     // Game is not over - switch batting/bowling
-                    messageBar = "LAST PLAYER BOWLED OUT!";
+                    messageBar = "LAST PLAYER OUT: " + Constants.OUT_MESSAGES[outMsgIdx];
 
                     // Set score as target and refresh all other stats
                     stats.setTarget(stats.getRuns() + 1);
@@ -300,9 +302,8 @@ public class HandCricketAPI {
                         message = getMessageForWinner(game.isRedBatting(), false);
                     }
                 }
-            }
-            else{
-                messageBar = "CATCH OUT!";
+            } else {
+                messageBar = Constants.OUT_MESSAGES[outMsgIdx];
             }
 
             // Move current batter to end of the list
@@ -321,8 +322,8 @@ public class HandCricketAPI {
             stats.setRuns(stats.getRuns() + bat);
             stats.setBalls(stats.getBalls() + 1);
 
-            if(bat == 6) messageBar = "THAT'S A SIXER!";
-            if(bat == 4) messageBar = "THAT'S A FOUR!";
+            if (bat == 6) messageBar = "THAT'S A SIXER!";
+            if (bat == 4) messageBar = "THAT'S A FOUR!";
 
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);
@@ -339,21 +340,17 @@ public class HandCricketAPI {
 
         //Check if BOWLER OVER is done
         if (stats.getBalls() % 6 == 0) {
-            if(messageBar =="") messageBar = "OVER DONE! NEXT BOWLER'S TURN!";
+            if (messageBar == "") messageBar = "OVER DONE! NEXT BOWLER'S TURN!";
             // Move current bowler to end of the list
             String currBowlerUID = bowlingTeam.remove(0);
             bowlingTeam.add(currBowlerUID);
         }
 
-        // If no message has been set for the bar yet, set a general  random message
-        if(messageBar == "") {
-            Random rand = new Random();
-            int firstIndex = rand.nextInt(Constants.messages.length);
-            messageBar = Constants.messages[firstIndex];
+        // Update game message bar
+        if (messageBar != null) {
+            game.setMessageBar(messageBar);
         }
 
-        // Update game message bar
-        game.setMessageBar(messageBar);
 
         // Update game message if not empty
         if (message != null) {

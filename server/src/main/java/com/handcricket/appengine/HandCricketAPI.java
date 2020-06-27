@@ -244,6 +244,7 @@ public class HandCricketAPI {
 
     private void updateGameStats(Game game, int bat, int bowl) {
         String message = null;
+        String messageBar = null;
 
         // Make pointers to team lists within team and make changes to it
         ArrayList<String> battingTeam;
@@ -259,6 +260,8 @@ public class HandCricketAPI {
         Stats stats = game.getStats();
         if (bat == bowl) {
             // OUT
+            Random rand = new Random();
+            int outMsgIdx = rand.nextInt(Constants.OUT_MESSAGES.length);
 
             // Runs +0, wickets +1, balls +1
             stats.setWickets(stats.getWickets() + 1);
@@ -271,6 +274,7 @@ public class HandCricketAPI {
                 // Check if this is the end of the game
                 if (stats.getTarget() == -1) {
                     // Game is not over - switch batting/bowling
+                    messageBar = "LAST PLAYER OUT: " + Constants.OUT_MESSAGES[outMsgIdx];
 
                     // Set score as target and refresh all other stats
                     stats.setTarget(stats.getRuns() + 1);
@@ -282,6 +286,7 @@ public class HandCricketAPI {
                     game.setRedBatting(!game.isRedBatting());
                 } else {
                     // Game is over
+                    messageBar = "GAME OVER!";
 
                     // Check who won
                     int target = stats.getTarget();
@@ -297,6 +302,8 @@ public class HandCricketAPI {
                         message = getMessageForWinner(game.isRedBatting(), false);
                     }
                 }
+            } else {
+                messageBar = Constants.OUT_MESSAGES[outMsgIdx];
             }
 
             // Move current batter to end of the list
@@ -315,6 +322,9 @@ public class HandCricketAPI {
             stats.setRuns(stats.getRuns() + bat);
             stats.setBalls(stats.getBalls() + 1);
 
+            if (bat == 6) messageBar = "THAT'S A SIXER!";
+            if (bat == 4) messageBar = "THAT'S A FOUR!";
+
             // Update current Batter stats to Firebase
             String currBatterUID = battingTeam.get(0);
             PlayerStats currBatterStats = game.getPlayers().get(currBatterUID);
@@ -330,10 +340,17 @@ public class HandCricketAPI {
 
         //Check if BOWLER OVER is done
         if (stats.getBalls() % 6 == 0) {
+            if (messageBar == "") messageBar = "OVER DONE! NEXT BOWLER'S TURN!";
             // Move current bowler to end of the list
             String currBowlerUID = bowlingTeam.remove(0);
             bowlingTeam.add(currBowlerUID);
         }
+
+        // Update game message bar
+        if (messageBar != null) {
+            game.setMessageBar(messageBar);
+        }
+
 
         // Update game message if not empty
         if (message != null) {

@@ -9,6 +9,7 @@ public class Game {
     private String code;
     private String host;
     private String message;
+    private String messageBar;
     private Hands hands;
     private Hands secret;
     private boolean redBatting;
@@ -100,5 +101,13 @@ public class Game {
 
     public void setStats(Stats stats) {
         this.stats = stats;
+    }
+
+    public String getMessageBar() {
+        return messageBar;
+    }
+
+    public void setMessageBar(String messageBar) {
+        this.messageBar = messageBar;
     }
 }

@@ -11,6 +11,7 @@ import 'package:handcricket/models/user_stat.dart';
 import 'package:handcricket/pages/main/curr_player.dart';
 import 'package:handcricket/pages/main/dice.dart';
 import 'package:handcricket/pages/main/hands.dart';
+import 'package:handcricket/pages/main/message_bar.dart';
 import 'package:handcricket/pages/main/stat.dart';
 import 'package:handcricket/pages/main/team_player_list.dart';
 import 'package:handcricket/pages/main/title_bar.dart';
@@ -37,6 +38,7 @@ class _MainGamePageState extends State<MainGamePage> {
   HandsWidget hands = HandsWidget();
   StatWidget topStats = StatWidget();
   StatWidget bottomStats = StatWidget();
+  MessageBarWidget messageBar = MessageBarWidget();
   CurrPlayerWidget currPlayer = CurrPlayerWidget();
   TeamPlayerListWidget teamPlayersList = TeamPlayerListWidget();
   DiceWidget dice = DiceWidget();
@@ -74,11 +76,11 @@ class _MainGamePageState extends State<MainGamePage> {
           image: DecorationImage(
             image: AssetImage(backgroundImage),
             colorFilter: new ColorFilter.mode(
-                Colors.black.withOpacity(0.2), BlendMode.dstATop),
+                Colors.black.withOpacity(0.5), BlendMode.dstATop),
             fit: BoxFit.cover,
           ),
         ),
-        padding: EdgeInsets.fromLTRB(20, 80, 20, 20),
+        padding: EdgeInsets.fromLTRB(20, 60, 20, 20),
         child: Column(
           children: <Widget>[
             titleBar,
@@ -86,6 +88,7 @@ class _MainGamePageState extends State<MainGamePage> {
             currPlayer,
             topStats,
             bottomStats,
+            messageBar,
             teamPlayersList,
             dice,
           ],
@@ -179,11 +182,14 @@ class _MainGamePageState extends State<MainGamePage> {
     bool redBatting = snapshot.value["redBatting"];
 
     if (batHand != -1 && bowlHand != -1) {
+      hands.mState.reset();
+      await Future.delayed(Duration(seconds: 1));
       if (redBatting)
         hands.mState.setHands(batHand, bowlHand);
       else
         hands.mState.setHands(bowlHand, batHand);
 
+      messageBar.mState.setMessage(snapshot.value["messageBar"]);
       // sleep for 1.5 seconds after setting hands
       await Future.delayed(Duration(seconds: 1, milliseconds: 500));
     }

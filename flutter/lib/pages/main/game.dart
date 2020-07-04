@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -89,6 +88,9 @@ class _MainGamePageState extends State<MainGamePage> {
             currPlayer,
             topStats,
             bottomStats,
+            SizedBox(
+              height: 10,
+            ),
             messageBar,
             teamPlayersList,
             dice,

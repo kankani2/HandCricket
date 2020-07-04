@@ -26,13 +26,11 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        _message,
-        textAlign: TextAlign.center,
-        style:
-            TextStyle(color: blackColor, fontSize: 25, fontFamily: primaryfont),
-      ),
+    return Text(
+      _message,
+      textAlign: TextAlign.center,
+      style:
+          TextStyle(color: blackColor, fontSize: 25, fontFamily: primaryfont),
     );
   }
 }

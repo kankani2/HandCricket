@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,13 +54,6 @@ class _MainGamePageState extends State<MainGamePage> {
   StreamSubscription _subscriptionSecret;
 
   _MainGamePageState(this._userCache);
-
-  @override
-  void dispose() {
-    _subscriptionStat.cancel();
-    _subscriptionSecret.cancel();
-    super.dispose();
-  }
 
   @override
   void initState() {

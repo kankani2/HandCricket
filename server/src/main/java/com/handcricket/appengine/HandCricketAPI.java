@@ -7,7 +7,6 @@ import com.google.api.server.spi.response.InternalServerErrorException;
 import com.google.api.server.spi.response.NotFoundException;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.GenericTypeIndicator;
 import com.handcricket.appengine.datamodel.*;
 
 
@@ -226,20 +225,16 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).setValue(game);
     }
 
-    private String getMessageForWinner(boolean redBatting, boolean isCurrTeamWinner) {
-        String redWins = "Red team wins! ";
-        String blueWins = "Blue team wins! ";
+    private String getMessageForWinner(boolean redBatting, boolean isCurrTeamWinner, int winningMargin) {
+        String redWins = "Red team wins by ";
+        String blueWins = "Blue team wins by ";
+        String winningCategory = isCurrTeamWinner ? "wickets" : "runs;";
 
         if ((redBatting && isCurrTeamWinner) || (!redBatting && !isCurrTeamWinner)) {
-            return redWins;
+            return redWins + winningMargin + " " + winningCategory + "!";
         } else {
-            return blueWins;
+            return blueWins + winningMargin + " " + winningCategory + "!";
         }
-    }
-
-    private PlayerStats getPlayerStats(DataSnapshot gameSnapshot, String UID) {
-        return gameSnapshot.child("players").child(UID).getValue(new GenericTypeIndicator<PlayerStats>() {
-        });
     }
 
     private void updateGameStats(Game game, int bat, int bowl) {
@@ -291,15 +286,16 @@ public class HandCricketAPI {
                     // Check who won
                     int target = stats.getTarget();
                     int runs = stats.getRuns();
+                    int wickets = stats.getWickets();
                     if (target <= runs) {
                         // Current batting team won
-                        message = getMessageForWinner(game.isRedBatting(), true);
+                        message = getMessageForWinner(game.isRedBatting(), true, max(battingTeam.size(), bowlingTeam.size()) - wickets);
                     } else if (target == (runs + 1)) {
-                        //Tie
+                        // Tie
                         message = "IT'S A TIE! ";
                     } else {
                         // Current batting team lost
-                        message = getMessageForWinner(game.isRedBatting(), false);
+                        message = getMessageForWinner(game.isRedBatting(), false, target - runs);
                     }
                 }
             } else {
@@ -332,25 +328,23 @@ public class HandCricketAPI {
 
             // Check if target has been accomplished
             int target = stats.getTarget();
+            int wickets = stats.getWickets();
             if (target != -1 && target <= stats.getRuns()) {
                 // Currently batting team won
-                message = getMessageForWinner(game.isRedBatting(), true);
+                message = getMessageForWinner(game.isRedBatting(), true, max(battingTeam.size(), bowlingTeam.size()) - wickets);
             }
         }
 
         //Check if BOWLER OVER is done
         if (stats.getBalls() % 6 == 0) {
-            if (messageBar == "") messageBar = "OVER DONE! NEXT BOWLER'S TURN!";
+            if (messageBar == null) messageBar = "OVER DONE! NEXT BOWLER'S TURN!";
             // Move current bowler to end of the list
             String currBowlerUID = bowlingTeam.remove(0);
             bowlingTeam.add(currBowlerUID);
         }
 
         // Update game message bar
-        if (messageBar != null) {
-            game.setMessageBar(messageBar);
-        }
-
+        game.setMessageBar(messageBar);
 
         // Update game message if not empty
         if (message != null) {

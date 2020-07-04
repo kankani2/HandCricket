@@ -14,6 +14,9 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
   String _message = "";
 
   setMessage(String msg) {
+    if (msg == null) {
+      msg = "";
+    }
     if (_message != msg) {
       setState(() {
         _message = msg;
@@ -23,11 +26,13 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      _message,
-      textAlign: TextAlign.center,
-      style:
-          TextStyle(color: blackColor, fontSize: 25, fontFamily: primaryfont),
+    return Center(
+      child: Text(
+        _message,
+        textAlign: TextAlign.center,
+        style:
+            TextStyle(color: blackColor, fontSize: 25, fontFamily: primaryfont),
+      ),
     );
   }
 }

@@ -56,6 +56,13 @@ class _MainGamePageState extends State<MainGamePage> {
   _MainGamePageState(this._userCache);
 
   @override
+  void dispose() {
+    _subscriptionStat.cancel();
+    _subscriptionSecret.cancel();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     _mainRoutine();

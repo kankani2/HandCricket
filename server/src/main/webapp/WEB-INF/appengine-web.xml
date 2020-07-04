@@ -26,7 +26,7 @@
     <!-- [START env_variables] -->
     <env-variables>
         <env-var name="ENDPOINTS_SERVICE_NAME" value="${endpoints.project.id}.appspot.com" />
-        <env-var name="ENDPOINTS_SERVICE_VERSION" value="2020-06-09r0" />
+        <env-var name="ENDPOINTS_SERVICE_VERSION" value="2020-07-04r0" />
     </env-variables>
     <!-- [END env_variables] -->
 </appengine-web-app>

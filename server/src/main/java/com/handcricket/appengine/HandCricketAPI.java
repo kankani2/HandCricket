@@ -227,20 +227,20 @@ public class HandCricketAPI {
 
     private String getMessageForWinner(Game game, boolean isCurrBattingTeamWinner) {
         boolean redBatting = game.isRedBatting();
-        String redWins = "Red team wins by ";
-        String blueWins = "Blue team wins by ";
         int target = game.getStats().getTarget();
         int runs = game.getStats().getRuns();
         int wickets = game.getStats().getWickets();
-        int maxWickets = max(game.getTeams().getRed().size(), game.getTeams().getBlue().size());
-        int winningMargin = isCurrBattingTeamWinner ? maxWickets - wickets: target - runs;
-        String winningCategory = isCurrBattingTeamWinner ? "wickets" : "runs;";
-
+        int numWickets = max(game.getTeams().getRed().size(), game.getTeams().getBlue().size());
+        int winningMargin = isCurrBattingTeamWinner ? numWickets - wickets: target - runs - 1;
+        String winningCategory = isCurrBattingTeamWinner ? "wickets" : "runs";
+        String prefix;
         if ((redBatting && isCurrBattingTeamWinner) || (!redBatting && !isCurrBattingTeamWinner)) {
-            return redWins + winningMargin + " " + winningCategory + "!";
+            prefix = "Red team wins by ";
         } else {
-            return blueWins + winningMargin + " " + winningCategory + "!";
+            prefix = "Blue team wins by ";
         }
+
+        return prefix + winningMargin + " " + winningCategory + "!";
     }
 
     private void updateGameStats(Game game, int bat, int bowl) {

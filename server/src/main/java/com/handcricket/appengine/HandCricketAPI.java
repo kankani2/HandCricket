@@ -225,12 +225,18 @@ public class HandCricketAPI {
         HandCricketServlet.firebase.child(DB.GAMES).child(gameID).setValue(game);
     }
 
-    private String getMessageForWinner(boolean redBatting, boolean isCurrTeamWinner, int winningMargin) {
+    private String getMessageForWinner(Game game, boolean isCurrBattingTeamWinner) {
+        boolean redBatting = game.isRedBatting();
         String redWins = "Red team wins by ";
         String blueWins = "Blue team wins by ";
-        String winningCategory = isCurrTeamWinner ? "wickets" : "runs;";
+        int target = game.getStats().getTarget();
+        int runs = game.getStats().getRuns();
+        int wickets = game.getStats().getWickets();
+        int maxWickets = max(game.getTeams().getRed().size(), game.getTeams().getBlue().size());
+        int winningMargin = isCurrBattingTeamWinner ? maxWickets - wickets: target - runs;
+        String winningCategory = isCurrBattingTeamWinner ? "wickets" : "runs;";
 
-        if ((redBatting && isCurrTeamWinner) || (!redBatting && !isCurrTeamWinner)) {
+        if ((redBatting && isCurrBattingTeamWinner) || (!redBatting && !isCurrBattingTeamWinner)) {
             return redWins + winningMargin + " " + winningCategory + "!";
         } else {
             return blueWins + winningMargin + " " + winningCategory + "!";
@@ -291,7 +297,7 @@ public class HandCricketAPI {
                         message = "IT'S A TIE! ";
                     } else {
                         // Current batting team lost
-                        message = getMessageForWinner(game.isRedBatting(), false, target - runs);
+                        message = getMessageForWinner(game, false);
                     }
                 }
             } else {
@@ -327,7 +333,7 @@ public class HandCricketAPI {
             int wickets = stats.getWickets();
             if (target != -1 && target <= stats.getRuns()) {
                 // Currently batting team won
-                message = getMessageForWinner(game.isRedBatting(), true, max(battingTeam.size(), bowlingTeam.size()) - wickets);
+                message = getMessageForWinner(game, true);
             }
         }
 

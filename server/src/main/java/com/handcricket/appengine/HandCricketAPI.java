@@ -286,11 +286,7 @@ public class HandCricketAPI {
                     // Check who won
                     int target = stats.getTarget();
                     int runs = stats.getRuns();
-                    int wickets = stats.getWickets();
-                    if (target <= runs) {
-                        // Current batting team won
-                        message = getMessageForWinner(game.isRedBatting(), true, max(battingTeam.size(), bowlingTeam.size()) - wickets);
-                    } else if (target == (runs + 1)) {
+                    if (target == (runs + 1)) {
                         // Tie
                         message = "IT'S A TIE! ";
                     } else {

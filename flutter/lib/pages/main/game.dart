@@ -88,6 +88,9 @@ class _MainGamePageState extends State<MainGamePage> {
             currPlayer,
             topStats,
             bottomStats,
+            SizedBox(
+              height: 10,
+            ),
             messageBar,
             teamPlayersList,
             dice,

@@ -24,8 +24,8 @@ class _TeamPlayerListWidgetState extends State<TeamPlayerListWidget> {
           VerticalDivider(
             thickness: 4,
             color: blackColor,
-            indent: 30,
-            endIndent: 30,
+            indent: 15,
+            endIndent: 15,
           ),
           _buildPlayerList(_blue),
         ],

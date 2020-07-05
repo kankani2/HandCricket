@@ -14,6 +14,9 @@ class _MessageBarWidgetState extends State<MessageBarWidget> {
   String _message = "";
 
   setMessage(String msg) {
+    if (msg == null) {
+      msg = "";
+    }
     if (_message != msg) {
       setState(() {
         _message = msg;

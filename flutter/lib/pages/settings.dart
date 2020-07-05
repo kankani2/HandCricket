@@ -70,116 +70,114 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: yellowColor,
       key: _scaffoldKey,
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(backgroundImage),
-              fit: BoxFit.cover,
-            ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(backgroundImage),
+            fit: BoxFit.cover,
           ),
-          padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                height: 70,
-                child: TextField(
-                  cursorColor: blackColor,
-                  maxLength: maxNameLength,
-                  maxLengthEnforced: true,
-                  keyboardType: TextInputType.text,
-                  controller: _usernameController,
-                  style: TextStyle(
+        ),
+        padding: EdgeInsets.fromLTRB(20, 80, 20, 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 20),
+              height: 70,
+              child: TextField(
+                cursorColor: blackColor,
+                maxLength: maxNameLength,
+                maxLengthEnforced: true,
+                keyboardType: TextInputType.text,
+                controller: _usernameController,
+                style: TextStyle(
+                  color: blackColor,
+                  fontSize: 30,
+                ),
+                decoration: InputDecoration(
+                  errorText: _validate ? 'Value Can\'t Be Empty' : null,
+                  labelStyle: TextStyle(
                     color: blackColor,
-                    fontSize: 30,
                   ),
-                  decoration: InputDecoration(
-                    errorText: _validate ? 'Value Can\'t Be Empty' : null,
-                    labelStyle: TextStyle(
-                      color: blackColor,
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: yellowColor, width: 5),
-                    ),
-                    labelText: 'Nickname',
-                    fillColor: Colors.white,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: yellowColor, width: 5),
                   ),
-                  onSubmitted: (String name) {
-                    if (_usernameController.text.trim().isEmpty) {
-                      setState(() {
-                        _validate = true;
-                      });
-                    } else {
-                      setState(() {
-                        _validate = false;
-                      });
-                      currUser.name = name;
-                    }
-                  },
+                  hintText: 'Nickname',
+                  fillColor: Colors.white,
                 ),
+                onSubmitted: (String name) {
+                  if (_usernameController.text.trim().isEmpty) {
+                    setState(() {
+                      _validate = true;
+                    });
+                  } else {
+                    setState(() {
+                      _validate = false;
+                    });
+                    currUser.name = name;
+                  }
+                },
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.arrow_left),
-                    iconSize: 80,
-                    onPressed: goToPrevious,
-                  ),
-                  Expanded(
-                    child: CarouselSlider(
-                      carouselController: buttonCarouselController,
-                      options: CarouselOptions(
-                        initialPage: currUser.icon,
-                        enlargeCenterPage: true,
-                        onPageChanged: (index, reason) {
-                          currentIndexForSlider = index;
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_left),
+                  iconSize: 80,
+                  onPressed: goToPrevious,
+                ),
+                Expanded(
+                  child: CarouselSlider(
+                    carouselController: buttonCarouselController,
+                    options: CarouselOptions(
+                      initialPage: currUser.icon,
+                      enlargeCenterPage: true,
+                      onPageChanged: (index, reason) {
+                        currentIndexForSlider = index;
+                      },
+                    ),
+                    items: getIconList().map((image) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: yellowColor,
+                                width: 5,
+                              ),
+                            ),
+                            child: Image.asset(
+                              image,
+                              color: blackColor,
+                              scale: 0.8,
+                            ),
+                          );
                         },
-                      ),
-                      items: getIconList().map((image) {
-                        return Builder(
-                          builder: (BuildContext context) {
-                            return Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: yellowColor,
-                                  width: 5,
-                                ),
-                              ),
-                              child: Image.asset(
-                                image,
-                                color: blackColor,
-                                scale: 0.8,
-                              ),
-                            );
-                          },
-                        );
-                      }).toList(),
-                    ),
+                      );
+                    }).toList(),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_right),
-                    iconSize: 80,
-                    onPressed: goToNext,
-                  ),
-                ],
-              ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20),
-                child: FlatButton(
-                  color: Colors.black,
-                  child: Text(
-                    'DONE',
-                    style: TextStyle(fontSize: 30, color: yellowColor),
-                  ),
-                  onPressed: _saveSettings,
                 ),
+                IconButton(
+                  icon: Icon(Icons.arrow_right),
+                  iconSize: 80,
+                  onPressed: goToNext,
+                ),
+              ],
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 20),
+              child: FlatButton(
+                color: Colors.black,
+                child: Text(
+                  'DONE',
+                  style: TextStyle(fontSize: 30, color: yellowColor),
+                ),
+                onPressed: _saveSettings,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

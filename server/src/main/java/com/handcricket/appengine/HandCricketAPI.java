@@ -330,7 +330,6 @@ public class HandCricketAPI {
 
             // Check if target has been accomplished
             int target = stats.getTarget();
-            int wickets = stats.getWickets();
             if (target != -1 && target <= stats.getRuns()) {
                 // Currently batting team won
                 message = getMessageForWinner(game, true);
